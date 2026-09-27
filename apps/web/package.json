@@ -1,0 +1,81 @@
+{
+  "//": [
+    "This config is based on https://docs.npmjs.com/cli/v10/configuring-npm/package-json?v=true#man",
+    "Below is the list of unused configuration options:",
+    [
+      "description",
+      "contributors",
+      "funding",
+      "files",
+      "browser",
+      "bin",
+      "man",
+      "directories",
+      "config",
+      "peerDependencies",
+      "peerDependenciesMeta",
+      "bundleDependencies",
+      "optionalDependencies",
+      "overrides",
+      "os",
+      "cpu",
+      "devEngines",
+      "publishConfig",
+      "workspaces",
+      "main",
+      "exports"
+    ],
+    "Make changes as needed to suit your requirements.",
+    "Wishing you diligence, wisdom, and happiness."
+  ],
+  "name": "@nguyenthanhduyofficial/web",
+  "version": "0.1.0",
+  "private": true,
+  "keywords": [
+    "typescript",
+    "types",
+    "shared",
+    "monorepo",
+    "interfaces",
+    "enums",
+    "type-definitions",
+    "workspace"
+  ],
+  "homepage": "https://github.com/NguyenThanhDuyOfficial/template",
+  "bugs": {
+    "url": "https://github.com/NguyenThanhDuyOfficial/template/issues",
+    "email": "nguyenthanhduyofficial@gmail.com"
+  },
+  "license": "GPL-3.0-only",
+  "author": {
+    "name": "nguyenThanhDuyOfficial",
+    "email": "nguyenthanhduyofficial@gmail.com"
+  },
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/NguyenThanhDuyOfficial/template"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@nguyenthanhduyofficial/typescript-config": "workspace:*",
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@11.26.0"
+}

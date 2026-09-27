@@ -1,0 +1,4 @@
+{
+  "extends": "@nguyenthanhduyofficial/typescript-config/prisma.json",
+  "include": ["src/**/*.ts"]
+}

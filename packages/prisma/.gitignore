@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.env
+contract.d.ts
+contract.json
