@@ -83,6 +83,10 @@ export const OrderListParamsSchema = z.object({
 export const CreateOrderRequestSchema = CreateOrderSchema.extend({
   userId: z.uuid().nullable(),
 });
+export const OrderDetailParamsSchema = z.object({
+  id: z.uuid(),
+  userId: z.uuid(),
+});
 
 export type OrderResponse = z.infer<typeof OrderSchema>;
 export type OrderListResponse = z.infer<typeof OrderListSchema>;
