@@ -52,7 +52,8 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "generate": "pnpm prisma generate",
-    "migrate:dev": "dotenv run -f .env.local -- prisma migrate dev"
+    "migrate:dev": "dotenv run -f .env.local -- prisma migrate dev",
+    "seed": "dotenv run -f .env.local -- pnpm dlx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@nguyenthanhduyofficial/typescript-config": "workspace:*",
