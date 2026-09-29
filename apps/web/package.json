@@ -62,10 +62,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@nguyenthanhduyofficial/schemas": "workspace:*",
+    "@nguyenthanhduyofficial/database": "workspace:*",
     "@nguyenthanhduyofficial/typescript-config": "workspace:*",
     "next": "16.3.6",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
