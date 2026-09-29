@@ -36,6 +36,7 @@
       "cache": false,
       "persistent": true
     },
-    "contract:emit": {}
+    "contract:emit": {},
+    "generate": {}
   }
 }
