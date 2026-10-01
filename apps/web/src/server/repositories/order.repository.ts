@@ -1,5 +1,8 @@
-import { prisma } from '@nguyenthanhduyofficial/database';
-import { CreateOrderParams } from '@nguyenthanhduyofficial/schemas';
+import { Prisma, prisma } from '@nguyenthanhduyofficial/database';
+import {
+  CreateOrderParams,
+  OrderListParams,
+} from '@nguyenthanhduyofficial/schemas';
 
 export class OrderRepository {
   async create(params: CreateOrderParams) {
@@ -39,125 +42,74 @@ export class OrderRepository {
           })),
         },
       },
-      select: {
-        id: true,
-        code: true,
-        status: true,
-        subtotal: true,
-        shippingFee: true,
-        total: true,
-        paymentMethod: true,
-        paymentStatus: true,
-        items: {
-          select: {
-            id: true,
-            productId: true,
-            variantId: true,
-            name: true,
-            imageUrl: true,
-            price: true,
-            quantity: true,
-            subtotal: true,
-          },
-        },
-        user: {
-          select: { id: true },
-        },
-        shipping: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-            address: true,
-            note: true,
-          },
-        },
-      },
+      select: orderDetailSelect,
     });
     return order;
   }
-  async findMany(userId: string) {
-    const orders = await prisma.order.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        code: true,
-        status: true,
-        subtotal: true,
-        shippingFee: true,
-        total: true,
-        paymentMethod: true,
-        paymentStatus: true,
-        createdAt: true,
-        updatedAt: true,
-        items: {
-          select: {
-            id: true,
-            productId: true,
-            variantId: true,
-            name: true,
-            imageUrl: true,
-            price: true,
-            quantity: true,
-            subtotal: true,
-          },
-        },
-        user: {
-          select: { id: true },
-        },
-        shipping: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-            address: true,
-            note: true,
-          },
-        },
-      },
-    });
-    return orders;
+  async findMany(params: OrderListParams) {
+    const { userId, page = 1, limit = 20 } = params;
+    const where: Prisma.OrderWhereInput = {};
+    where.userId = userId;
+    const [orders, total] = await Promise.all([
+      await prisma.order.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        select: orderDetailSelect,
+      }),
+      prisma.order.count({ where }),
+    ]);
+    return {
+      data: orders,
+      total,
+    };
   }
   async findById(id: string) {
     const order = await prisma.order.findUnique({
       where: { id },
-      select: {
-        id: true,
-        code: true,
-        status: true,
-        subtotal: true,
-        shippingFee: true,
-        total: true,
-        paymentMethod: true,
-        paymentStatus: true,
-        createdAt: true,
-        updatedAt: true,
-        items: {
-          select: {
-            id: true,
-            productId: true,
-            variantId: true,
-            name: true,
-            imageUrl: true,
-            price: true,
-            quantity: true,
-            subtotal: true,
-          },
-        },
-        user: {
-          select: { id: true },
-        },
-        shipping: {
-          select: {
-            id: true,
-            name: true,
-            phone: true,
-            address: true,
-            note: true,
-          },
-        },
-      },
+      select: orderDetailSelect,
     });
     return order;
   }
 }
+export const orderDetailSelect: Prisma.OrderSelect = {
+  id: true,
+  code: true,
+  status: true,
+  subtotal: true,
+  shippingFee: true,
+  total: true,
+  paymentMethod: true,
+  paymentStatus: true,
+  createdAt: true,
+  updatedAt: true,
+  items: {
+    select: {
+      id: true,
+      productId: true,
+      variantId: true,
+      name: true,
+      imageUrl: true,
+      price: true,
+      quantity: true,
+      subtotal: true,
+    },
+  },
+  user: {
+    select: {
+      id: true,
+    },
+  },
+  shipping: {
+    select: {
+      id: true,
+      name: true,
+      phone: true,
+      address: true,
+      note: true,
+    },
+  },
+};
+export type OrderDetailResult = Prisma.OrderGetPayload<{
+  select: typeof orderDetailSelect;
+}>;

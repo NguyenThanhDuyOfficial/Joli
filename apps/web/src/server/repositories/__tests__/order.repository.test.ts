@@ -242,16 +242,16 @@ describe('OrderRepository', () => {
         ],
       });
 
-      const orders = await repo.findMany(user.id);
+      const orders = await repo.findMany({ userId: user.id });
 
-      expect(orders).toHaveLength(2);
+      expect(orders.data).toHaveLength(2);
     });
     it('returns empty array when user has no orders', async () => {
       const user = await createTestUser();
 
-      const orders = await repo.findMany(user.id);
+      const orders = await repo.findMany({ userId: user.id });
 
-      expect(orders).toEqual([]);
+      expect(orders.data).toEqual([]);
     });
     it('does not return orders of other users', async () => {
       const userA = await createTestUser();
@@ -298,10 +298,10 @@ describe('OrderRepository', () => {
         ],
       });
 
-      const orders = await repo.findMany(userA.id);
+      const orders = await repo.findMany({ userId: userA.id });
 
-      expect(orders).toHaveLength(1);
-      expect(orders[0].code).toBe('ORD-A');
+      expect(orders.data).toHaveLength(1);
+      expect(orders.data[0].code).toBe('ORD-A');
     });
     it('includes items, shipping, user', async () => {
       const user = await createTestUser();
@@ -331,11 +331,11 @@ describe('OrderRepository', () => {
         ],
       });
 
-      const orders = await repo.findMany(user.id);
+      const orders = await repo.findMany({ userId: user.id });
 
-      expect(orders[0].items).toHaveLength(1);
-      expect(orders[0].shipping).toBeDefined();
-      expect(orders[0].user?.id).toBe(user.id);
+      expect(orders.data[0].items).toHaveLength(1);
+      expect(orders.data[0].shipping).toBeDefined();
+      expect(orders.data[0].user?.id).toBe(user.id);
     });
   });
   describe('OrderRepository.findById', () => {

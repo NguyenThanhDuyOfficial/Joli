@@ -1,39 +1,52 @@
-import 'server-only';
-import { orderRepository, OrderError } from '../repositories/order.repository';
-import { AppError, NotFoundError, BadRequestError } from '../error';
-import type {
+import {
+  CreateOrderParams,
+  OrderDTO,
+  OrderListDTO,
   OrderListParams,
-  OrderListResponse,
-  OrderResponse,
-  CreateOrderRequest,
 } from '@nguyenthanhduyofficial/schemas';
+import { OrderDetailResult, OrderRepository } from '../repositories';
+import { NotFoundError } from '../error';
 
 export class OrderService {
-  async getList(params: OrderListParams): Promise<OrderListResponse> {
-    return orderRepository.findMany(params);
-  }
+  constructor(private readonly orderRepo: OrderRepository) {}
 
-  async getById(id: string, userId: string): Promise<OrderResponse> {
-    const order = await orderRepository.findById(id, userId);
+  async create(params: CreateOrderParams): Promise<OrderDTO> {
+    const order = await this.orderRepo.create(params);
+    return transformToDTO(order);
+  }
+  async getList(params: OrderListParams): Promise<OrderListDTO> {
+    const { page = 1, limit = 20 } = params;
+    const { data, total } = await this.orderRepo.findMany(params);
+    return {
+      data: data.map((order) => transformToDTO(order)),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+  async getById(id: string): Promise<OrderDTO> {
+    const order = await this.orderRepo.findById(id);
     if (!order) {
-      throw new NotFoundError(
-        'ORDER_NOT_FOUND',
-        `Không tìm thấy đơn hàng "${id}"`,
-      );
+      throw new NotFoundError('ORDER_NOT_FOUND');
     }
-    return order;
-  }
-
-  async create(input: CreateOrderRequest): Promise<OrderResponse> {
-    try {
-      return await orderRepository.create(input);
-    } catch (err) {
-      if (err instanceof OrderError) {
-        throw new BadRequestError(err.code, err.message);
-      }
-      throw err;
-    }
+    return transformToDTO(order);
   }
 }
 
-export const orderService = new OrderService();
+function transformToDTO(order: OrderDetailResult): OrderDTO {
+  const { items, shippingFee, total, subtotal, ...o } = order;
+  return {
+    ...o,
+    subtotal: Number(subtotal),
+    total: Number(total),
+    shippingFee: Number(shippingFee),
+    items: items.map(({ price, subtotal, ...i }) => ({
+      ...i,
+      subtotal: Number(subtotal),
+      price: Number(price),
+    })),
+  };
+}
