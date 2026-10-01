@@ -1,8 +1,9 @@
 import {
+  createTestImage,
   createTestProduct,
   createTestShipping,
   createTestUser,
-  createTestVariants,
+  createTestVariant,
 } from './helpers';
 import { OrderRepository } from '../order.repository';
 import { expect, describe, it } from 'vitest';
@@ -12,9 +13,11 @@ const repo = new OrderRepository();
 describe('OrderRepository', () => {
   describe('OrderRepository.create', () => {
     it('creates order with items', async () => {
-      const user = await createTestUser();
       const shipping = await createTestShipping();
       const product = await createTestProduct();
+      const user = await createTestUser();
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
 
       const order = await repo.create({
         userId: user.id,
@@ -25,6 +28,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'Áo thun',
             price: 100_000,
@@ -41,14 +46,20 @@ describe('OrderRepository', () => {
     });
     it('creates order without shipping', async () => {
       const product = await createTestProduct();
+      const user = await createTestUser();
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
 
       const order = await repo.create({
+        userId: user.id,
         code: 'ORD-NOSHIP-001',
         subtotal: 100_000,
         total: 100_000,
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'X',
             price: 100_000,
@@ -65,13 +76,22 @@ describe('OrderRepository', () => {
       const p2 = await createTestProduct({ slug: 'p2' });
       const p3 = await createTestProduct({ slug: 'p3' });
 
+      const user = await createTestUser();
+      const variant1 = await createTestVariant(p1.id);
+      const variant2 = await createTestVariant(p2.id);
+      const variant3 = await createTestVariant(p3.id);
+      const image = await createTestImage(variant1.id);
+
       const order = await repo.create({
+        userId: user.id,
         code: 'ORD-MULTI-001',
         subtotal: 600_000,
         total: 600_000,
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant1.id,
             productId: p1.id,
             name: 'A',
             price: 100_000,
@@ -79,6 +99,8 @@ describe('OrderRepository', () => {
             subtotal: 100_000,
           },
           {
+            imageUrl: image.url,
+            variantId: variant2.id,
             productId: p2.id,
             name: 'B',
             price: 200_000,
@@ -86,6 +108,8 @@ describe('OrderRepository', () => {
             subtotal: 200_000,
           },
           {
+            imageUrl: image.url,
+            variantId: variant3.id,
             productId: p3.id,
             name: 'C',
             price: 300_000,
@@ -99,17 +123,22 @@ describe('OrderRepository', () => {
     });
     it('creates order with variantId', async () => {
       const product = await createTestProduct();
-      const variant = await createTestVariants(product.id);
+      const variant = await createTestVariant(product.id);
+
+      const user = await createTestUser();
+      const image = await createTestImage(variant.id);
 
       const order = await repo.create({
+        userId: user.id,
         code: 'ORD-VAR-001',
         subtotal: 100_000,
         total: 100_000,
         paymentMethod: 'cod',
         items: [
           {
-            productId: product.id,
+            imageUrl: image.url,
             variantId: variant.id,
+            productId: product.id,
             name: 'Áo thun',
             price: 100_000,
             quantity: 1,
@@ -123,13 +152,20 @@ describe('OrderRepository', () => {
     it('throws on duplicate code', async () => {
       const product = await createTestProduct();
 
+      const user = await createTestUser();
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
+
       await repo.create({
+        userId: user.id,
         code: 'ORD-DUP-001',
         subtotal: 100_000,
         total: 100_000,
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,
@@ -141,12 +177,15 @@ describe('OrderRepository', () => {
 
       await expect(
         repo.create({
-          code: 'ORD-DUP-001', // ← trùng
+          userId: user.id,
+          code: 'ORD-DUP-001',
           subtotal: 100_000,
           total: 100_000,
           paymentMethod: 'cod',
           items: [
             {
+              imageUrl: image.url,
+              variantId: variant.id,
               productId: product.id,
               name: 'A',
               price: 100_000,
@@ -163,6 +202,9 @@ describe('OrderRepository', () => {
       const user = await createTestUser();
       const product = await createTestProduct();
 
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
+
       await repo.create({
         userId: user.id,
         code: 'ORD-1',
@@ -171,6 +213,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,
@@ -187,6 +231,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'B',
             price: 200_000,
@@ -212,6 +258,9 @@ describe('OrderRepository', () => {
       const userB = await createTestUser();
       const product = await createTestProduct();
 
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
+
       await repo.create({
         userId: userA.id,
         code: 'ORD-A',
@@ -220,6 +269,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,
@@ -236,6 +287,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'B',
             price: 100_000,
@@ -255,6 +308,9 @@ describe('OrderRepository', () => {
       const shipping = await createTestShipping();
       const product = await createTestProduct();
 
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
+
       await repo.create({
         userId: user.id,
         shippingId: shipping.id,
@@ -264,6 +320,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,
@@ -283,13 +341,19 @@ describe('OrderRepository', () => {
   describe('OrderRepository.findById', () => {
     it('returns order by id', async () => {
       const product = await createTestProduct();
+      const user = await createTestUser();
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
       const created = await repo.create({
+        userId: user.id,
         code: 'ORD-FIND-001',
         subtotal: 100_000,
         total: 100_000,
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,
@@ -312,6 +376,8 @@ describe('OrderRepository', () => {
       const user = await createTestUser();
       const shipping = await createTestShipping();
       const product = await createTestProduct();
+      const variant = await createTestVariant(product.id);
+      const image = await createTestImage(variant.id);
 
       const created = await repo.create({
         userId: user.id,
@@ -322,6 +388,8 @@ describe('OrderRepository', () => {
         paymentMethod: 'cod',
         items: [
           {
+            imageUrl: image.url,
+            variantId: variant.id,
             productId: product.id,
             name: 'A',
             price: 100_000,

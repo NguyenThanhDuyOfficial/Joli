@@ -159,7 +159,7 @@ enum PaymentMethod {
 
 model Order {
   id            String        @id @default(uuid())
-  userId        String?       @map("user_id")
+  userId        String        @map("user_id")
   shippingId    String?       @unique @map("shipping_id")
   code          String        @unique
   status        OrderStatus   @default(pending)
@@ -173,7 +173,7 @@ model Order {
 
   items OrderItem[]
 
-  user     User?     @relation(fields: [userId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
   shipping Shipping? @relation(fields: [shippingId], references: [id])
 
   @@index([userId])
@@ -186,9 +186,9 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String  @map("order_id")
   productId String  @map("product_id")
-  variantId String? @map("variant_id")
-  name      String?
-  imageUrl  String? @map("image_url")
+  variantId String  @map("variant_id")
+  name      String
+  imageUrl  String  @map("image_url")
   price     Decimal @db.Decimal(15, 2)
   quantity  Int
   subtotal  Decimal @db.Decimal(15, 2)

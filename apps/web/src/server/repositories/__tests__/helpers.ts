@@ -30,20 +30,9 @@ export async function createTestProductLove(userId: string, productId: string) {
 export async function createTestProduct(overrides?: {
   name?: string;
   slug?: string;
-  imageUrl?: string;
-  categoryName?: string;
-  categorySlug?: string;
-  tagName?: string;
-  tagSlug?: string;
-
-  variantIsActive?: boolean;
 }) {
   const name = overrides?.name ?? 'Test Product';
   const slug = overrides?.slug ?? createUnique('product');
-  const categoryName = overrides?.categoryName ?? 'Category Name';
-  const categorySlug = overrides?.categorySlug ?? createUnique('category');
-  const tagName = overrides?.tagName ?? createUnique('tag');
-  const tagSlug = overrides?.tagSlug ?? createUnique('tag');
 
   const product = await prisma.product.create({
     data: {
@@ -52,41 +41,14 @@ export async function createTestProduct(overrides?: {
     },
   });
 
-  await createTestVariants(product.id);
-
-  if (categorySlug) {
-    const category = await createTestCategory(categoryName, categorySlug);
-    await prisma.product.update({
-      where: { id: product.id },
-      data: {
-        categories: {
-          create: [{ categoryId: category.id }],
-        },
-      },
-    });
-  }
-
-  if (tagSlug) {
-    const tag = await createTestTag(tagName, tagSlug);
-    await prisma.product.update({
-      where: { id: product.id },
-      data: {
-        tags: {
-          create: [{ tagId: tag.id }],
-        },
-      },
-    });
-  }
-
   return product;
 }
 
-export async function createTestVariants(
+export async function createTestVariant(
   productId: string,
   price: number = 100,
   stock: number = 1,
   isActive: boolean = true,
-  url: string = 'https://via.placeholder.com/300',
 ) {
   const variant = await prisma.productVariant.create({
     data: {
@@ -97,21 +59,30 @@ export async function createTestVariants(
     },
   });
 
-  await prisma.productImage.create({
-    data: {
-      variantId: variant.id,
-      url,
-    },
-  });
   return variant;
 }
 
+export async function createTestImage(
+  variantId: string,
+  url: string = 'https://via.placeholder.com/300',
+) {
+  const image = await prisma.productImage.create({
+    data: {
+      variantId: variantId,
+      url,
+    },
+  });
+  return image;
+}
+
 export async function createTestCategory(
-  categoryName: string,
   categorySlug: string,
+  productId: string,
+  categoryName: string = 'Category Name',
 ) {
   const category = await prisma.category.create({
     data: {
+      products: { create: [{ productId }] },
       name: categoryName,
       slug: categorySlug,
     },
@@ -119,24 +90,32 @@ export async function createTestCategory(
   return category;
 }
 
-export async function createTestTag(tagName: string, tagSlug: string) {
+export async function createTestTag(
+  tagSlug: string,
+  productId: string,
+  tagName: string = 'Tag Name',
+) {
   const tag = await prisma.tag.create({
     data: {
       name: tagName,
       slug: tagSlug,
+      products: { create: [{ productId }] },
     },
   });
   return tag;
 }
 
 // ORDER //
-export async function createTestOrder(overrides?: {
-  code?: string;
-  subtotal?: number;
-  shippingFee?: number;
-  total?: number;
-  paymentMethod?: PaymentMethod;
-}) {
+export async function createTestOrder(
+  userId: string,
+  overrides?: {
+    code?: string;
+    subtotal?: number;
+    shippingFee?: number;
+    total?: number;
+    paymentMethod?: PaymentMethod;
+  },
+) {
   const code = overrides?.code ?? createUnique('order');
   const subtotal = overrides?.subtotal ?? 0;
   const shippingFee = overrides?.shippingFee ?? 0;
@@ -144,6 +123,7 @@ export async function createTestOrder(overrides?: {
   const paymentMethod = overrides?.paymentMethod ?? PaymentMethod.cod;
   const order = await prisma.order.create({
     data: {
+      userId,
       code,
       subtotal,
       shippingFee,
@@ -155,11 +135,14 @@ export async function createTestOrder(overrides?: {
 }
 
 export async function createTestOrderItem(
+  variantId: string,
   orderId: string,
   productId: string,
   price: number,
   quantity: number,
   subtotal: number,
+  name: string,
+  imageUrl: string,
 ) {
   const orderItem = await prisma.orderItem.create({
     data: {
@@ -168,6 +151,9 @@ export async function createTestOrderItem(
       price,
       quantity,
       subtotal,
+      variantId,
+      name,
+      imageUrl,
     },
   });
   return orderItem;

@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { getOrderBy, ProductRepository } from '../product.repository';
 import {
+  createTestCategory,
+  createTestImage,
   createTestOrder,
   createTestOrderItem,
   createTestProduct,
   createTestProductLove,
+  createTestTag,
   createTestUser,
-  createTestVariants,
+  createTestVariant,
 } from './helpers';
 
 const repo = new ProductRepository();
@@ -23,7 +26,8 @@ describe('ProductRepository', () => {
     });
 
     it('filters by category slug', async () => {
-      await createTestProduct({ categorySlug: 'candle' });
+      const product = await createTestProduct();
+      await createTestCategory('candle', product.id);
 
       const result = await repo.findMany({
         category: ['candle'],
@@ -33,7 +37,8 @@ describe('ProductRepository', () => {
     });
 
     it('filters by tag slug', async () => {
-      await createTestProduct({ tagSlug: 'sale' });
+      const product = await createTestProduct();
+      await createTestTag('sale', product.id);
 
       const result = await repo.findMany({ tag: ['sale'] });
 
@@ -87,8 +92,10 @@ describe('ProductRepository', () => {
     });
 
     it('includes only active variants with images', async () => {
-      await createTestProduct({ variantIsActive: false });
-      await createTestProduct();
+      const product = await createTestProduct();
+      await createTestVariant(product.id, undefined, undefined, false);
+      const product2 = await createTestProduct();
+      await createTestVariant(product2.id);
 
       const result = await repo.findMany();
 
@@ -96,11 +103,32 @@ describe('ProductRepository', () => {
     });
 
     it('sorts bestsellers by orderItems count desc', async () => {
-      const p1 = await createTestProduct();
+      const user = await createTestUser();
+      await createTestProduct();
       const p2 = await createTestProduct({ slug: 'p2' });
-      const order = await createTestOrder();
-      await createTestOrderItem(order.id, p2.id, 100, 1, 100);
-      await createTestOrderItem(order.id, p2.id, 100, 1, 100);
+      const variant2 = await createTestVariant(p2.id);
+      const image2 = await createTestImage(variant2.id);
+      const order = await createTestOrder(user.id);
+      await createTestOrderItem(
+        variant2.id,
+        order.id,
+        p2.id,
+        100,
+        1,
+        100,
+        p2.name,
+        image2.url,
+      );
+      await createTestOrderItem(
+        variant2.id,
+        order.id,
+        p2.id,
+        100,
+        1,
+        100,
+        p2.name,
+        image2.url,
+      );
 
       const result = await repo.findMany({ sort: 'bestsellers' });
 
@@ -128,7 +156,9 @@ describe('ProductRepository', () => {
 
   describe('ProductRepository.findBySlug', () => {
     it('returns product with relations', async () => {
-      await createTestProduct({ slug: 'scented-candle', tagSlug: 'sale' });
+      const product = await createTestProduct({ slug: 'scented-candle' });
+      await createTestTag('sale', product.id);
+      await createTestVariant(product.id);
 
       const result = await repo.findBySlug('scented-candle');
 
@@ -144,9 +174,8 @@ describe('ProductRepository', () => {
       const p = await createTestProduct({
         slug: 'ao-thun',
       });
-      // createTestProduct default make 1 variant
-      for (let i = 0; i < 2; i++) {
-        await createTestVariants(p.id);
+      for (let i = 0; i < 3; i++) {
+        await createTestVariant(p.id);
       }
 
       const result = await repo.findBySlug('ao-thun');

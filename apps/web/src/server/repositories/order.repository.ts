@@ -1,8 +1,8 @@
 import { prisma } from '@nguyenthanhduyofficial/database';
-import { OrderParams } from '@nguyenthanhduyofficial/schemas';
+import { CreateOrderParams } from '@nguyenthanhduyofficial/schemas';
 
 export class OrderRepository {
-  async create(params: OrderParams) {
+  async create(params: CreateOrderParams) {
     const {
       userId,
       shippingId,
@@ -30,7 +30,7 @@ export class OrderRepository {
         items: {
           create: items.map((item) => ({
             productId: item.productId,
-            variantId: item.variantId ?? null,
+            variantId: item.variantId,
             name: item.name,
             imageUrl: item.imageUrl ?? null,
             price: item.price,
