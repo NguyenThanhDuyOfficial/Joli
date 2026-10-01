@@ -8,7 +8,7 @@ import type {
 
 export class ProductService {
   constructor(private readonly productRepo: ProductRepository) {}
-  async getList(params: ProductListParams): Promise<ProductListDTO> {
+  async getList(params?: ProductListParams): Promise<ProductListDTO> {
     const { page = 1, limit = 20 } = params ?? {};
     const { data, total } = await this.productRepo.findMany(params);
 
