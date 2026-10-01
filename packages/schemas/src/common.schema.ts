@@ -17,24 +17,31 @@ export const PaginationSchema = z.object({
   totalPages: z.int(),
 });
 
-export const PageParamSchema = z.coerce.number().int().min(1).default(1);
-export const LimitParamSchema = z.coerce
+export const PageParamSchema = z.number().int().min(1).default(1).optional();
+export const LimitParamSchema = z
   .number()
   .int()
   .min(1)
   .max(100)
-  .default(20);
+  .default(20)
+  .optional();
 
 export const SortParamSchema = z
-  .enum(['newest', 'bestsellers', 'price_asc', 'price_desc'])
-  .default('newest');
+  .enum(['newest', 'bestsellers'])
+  .default('newest')
+  .optional();
 
 export const SearchParamSchema = z.string().min(1).max(100).optional();
 
-export const CsvParamSchema = z
-  .string()
-  .optional()
-  .transform((val) => (val ? val.split(',').map((s) => s.trim()) : undefined));
+const CsvParamSchema = z
+  .union([z.string(), z.array(z.string())])
+  .transform((val) => {
+    const arr = Array.isArray(val) ? val : val.split(',');
+    return arr.map((s) => s.trim()).filter(Boolean);
+  })
+  .optional();
 
 export const CategoryParamSchema = CsvParamSchema;
 export const TagParamSchema = CsvParamSchema;
+
+export type SortParam = z.infer<typeof SortParamSchema>;

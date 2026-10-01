@@ -37,6 +37,8 @@
       "persistent": true
     },
     "contract:emit": {},
-    "generate": {}
+    "generate": {},
+    "test:coverage": {},
+    "test:watch": {}
   }
 }

@@ -15,7 +15,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "contract:emit": "turbo run contract:emit",
-    "generate": "turbo run generate"
+    "generate": "turbo run generate",
+    "test:coverage": "turbo run test:coverage",
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.1",

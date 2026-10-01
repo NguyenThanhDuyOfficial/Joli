@@ -130,8 +130,6 @@ components:
         enum:
           - newest
           - bestsellers
-          - price_asc
-          - price_desc
         default: newest
     Page:
       name: page
