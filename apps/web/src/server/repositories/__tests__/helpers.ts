@@ -1,5 +1,6 @@
 import { PaymentMethod, prisma } from '@nguyenthanhduyofficial/database';
 
+// PRODUCT //
 export async function createTestUser(overrides?: {
   name?: string;
   email?: string;
@@ -128,6 +129,7 @@ export async function createTestTag(tagName: string, tagSlug: string) {
   return tag;
 }
 
+// ORDER //
 export async function createTestOrder(overrides?: {
   code?: string;
   subtotal?: number;
@@ -171,6 +173,26 @@ export async function createTestOrderItem(
   return orderItem;
 }
 
+export async function createTestShipping(
+  orderId: string = createUnique('order'),
+  name: string = 'Shipping Name',
+  phone: string = '1234567890',
+  address: string = 'HCM',
+  note?: string,
+) {
+  const shipping = await prisma.shipping.create({
+    data: {
+      orderId,
+      name,
+      phone,
+      address,
+      note,
+    },
+  });
+  return shipping;
+}
+
+// HELPER //
 export function createUnique(name?: string) {
   return `test-${name}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 }
