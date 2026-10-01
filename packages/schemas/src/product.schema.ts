@@ -3,6 +3,7 @@ import {
   CategoryParamSchema,
   LimitParamSchema,
   PageParamSchema,
+  PaginationSchema,
   SearchParamSchema,
   SortParamSchema,
   TagParamSchema,
@@ -24,7 +25,7 @@ export const ProductVariantSchema = z.object({
   productId: z.string(),
   size: z.string().nullable().optional(),
   color: z.string().nullable().optional(),
-  price: z.number().nullable().optional(),
+  price: z.number().nullable(),
   stock: z.number().int().min(0).default(0),
   isActive: z.boolean().default(true),
   createdAt: z.iso.datetime(),
@@ -91,7 +92,7 @@ export const ProductListItemDTOSchema = ProductSchema.pick({
 
 export const ProductListDTOSchema = z.object({
   data: z.array(ProductListItemDTOSchema),
-  total: z.number().int(),
+  pagination: PaginationSchema,
 });
 
 export const ProductDetailDTOSchema = ProductSchema.pick({
@@ -135,4 +136,4 @@ export const ProductListParamsSchema = z.object({
 export type Product = z.infer<typeof ProductSchema>;
 export type ProductListDTO = z.infer<typeof ProductListDTOSchema>;
 export type ProductListParams = z.infer<typeof ProductListParamsSchema>;
-export type ProductDetailResponse = z.infer<typeof ProductSchema>;
+export type ProductDetailDTO = z.infer<typeof ProductDetailDTOSchema>;

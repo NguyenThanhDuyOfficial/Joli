@@ -1,9 +1,7 @@
-import 'server-only';
-
 export class AppError extends Error {
   constructor(
     public code: string,
-    message: string,
+    message?: string,
     public statusCode: number = 400,
     public details?: unknown,
   ) {
@@ -13,7 +11,7 @@ export class AppError extends Error {
 }
 
 export class NotFoundError extends AppError {
-  constructor(code: string, message: string) {
+  constructor(code: string, message?: string) {
     super(code, message, 404);
   }
 }
