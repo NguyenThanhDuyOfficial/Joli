@@ -54,14 +54,16 @@
     "generate": "pnpm prisma generate",
     "seed": "dotenv run -f .env.local -- pnpm dlx tsx prisma/seed.ts",
     "migrate:dev": "dotenv run -f .env.local -- prisma migrate dev",
-    "migrate:test": "dotenv run -f ../../apps/web/.env.test -- prisma migrate dev",
-    "reset:test": "dotenv run -f ../../apps/web/.env.test -- prisma migrate reset"
+    "migrate:reset": "dotenv run -f .env.local -- prisma migrate reset",
+    "migrate:deploy": "dotenv run -f .env -- prisma deploy",
+    "test:migrate:dev": "dotenv run -f .env.test -- prisma migrate dev",
+    "test:migrate:reset": "dotenv run -f .env.test -- prisma migrate reset"
   },
   "dependencies": {
     "@nguyenthanhduyofficial/typescript-config": "workspace:*",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "dotenv": "^18.0.4",
+    "dotenv": "^18.0.5",
     "pg": "^8.23.0",
     "zod": "^4.6.5"
   },

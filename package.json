@@ -8,6 +8,14 @@
   "scripts": {
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
+    "db:generate": "turbo run generate",
+    "db:seed": "turbo run seed",
+    "db:migrate:dev": "turbo run migrate:dev && pnpm db:test:migrate:dev",
+    "db:migrate:reset": "turbo run migrate:reset",
+    "db:migrate:deploy": "turbo run migrate:deploy",
+    "db:test:migrate:dev": "turbo run test:migrate:dev",
+    "db:test:migrate:reset": "turbo run test:migrate:test",
+    "db:migrate:test": "turbo run migrate:test",
     "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
@@ -15,7 +23,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "contract:emit": "turbo run contract:emit",
-    "generate": "turbo run generate",
     "test:coverage": "turbo run test:coverage",
     "test:watch": "turbo run test:watch"
   },
