@@ -13,6 +13,13 @@ export async function GET(req: NextRequest) {
       { status: 400 },
     );
   }
-  const result = await productService.getList(parsed.data);
-  return NextResponse.json(result);
+  try {
+    const result = await productService.getList(parsed.data);
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json(
+      { error: 'INTERNAL_SERVER_ERROR' },
+      { status: 500 },
+    );
+  }
 }

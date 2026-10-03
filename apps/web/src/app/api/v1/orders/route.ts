@@ -5,7 +5,6 @@ import {
   OrderListParamsSchema,
 } from '@nguyenthanhduyofficial/schemas';
 import { orderService } from '../../../../server/container';
-import { UnauthorizedError } from '../../../../server/error';
 import z from 'zod';
 
 export async function GET(req: NextRequest) {

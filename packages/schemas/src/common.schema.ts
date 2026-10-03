@@ -17,8 +17,13 @@ export const PaginationSchema = z.object({
   totalPages: z.int(),
 });
 
-export const PageParamSchema = z.number().int().min(1).default(1).optional();
-export const LimitParamSchema = z
+export const PageParamSchema = z.coerce
+  .number()
+  .int()
+  .min(1)
+  .default(1)
+  .optional();
+export const LimitParamSchema = z.coerce
   .number()
   .int()
   .min(1)
