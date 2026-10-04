@@ -1,0 +1,82 @@
+{
+  "Products": {
+    "mostLoved": "Được Yêu Thích Nhất",
+    "image": "Ảnh sản phẩm",
+    "buyNow": "Mua ngay",
+    "colognes": "Nước Hoa",
+    "candle": "Nến",
+    "body-hand-wash": "Sữa Tắm & Nước Rửa Tay",
+    "diffusers-refills": "Tinh dầu"
+  },
+  "Benefit": {
+    "title": "Quyền Lợi Tặng Kèm",
+    "presonalization": {
+      "title": "Cá Nhân Hóa",
+      "description": " Biến món quà trở nên đặc biệt hơn với dịch vụ khắc chữ và nhiều tính năng khác"
+    },
+    "wrapping": {
+      "title": "Miễn phí gói quà",
+      "description": " Món quà hoàn hảo, được gói cẩn thận"
+    },
+    "shipping": {
+      "title": "Giao hàng tiêu chuẩn miễn phí",
+      "description": " Khi bạn mua sắm từ 500k trở lên"
+    }
+  },
+  "Contact": {
+    "title": "Nhận thông báo sớm nhất",
+    "description": "Đăng ký nhận email và nhận ngay ưu đãi giảm giá 10% cho lần mua hàng đầu tiên.",
+    "emailAddress": "*Địa chỉ Email",
+    "register": "Đăng Ký"
+  },
+  "Footer": {
+    "helpAndContact": {
+      "title": "Trợ giúp & Liên hệ",
+      "trackOrder": "Theo dõi đơn hàng",
+      "FAQs": "Câu hỏi thường gặp",
+      "myOrder": "Đơn hàng của tôi",
+      "deliveryInformation": "Thông tin giao hàng",
+      "returnsAndRefunds": "Trả hàng & Hoàn tiền",
+      "shoppingOnline": "Mua sắm trực tiếp",
+      "contactUs": "Liên hệ với chúng tôi",
+      "contactManufacturer": "Liên hệ với nhà sản xuất"
+    },
+    "ourCompany": {
+      "title": "Về công ty chúng tôi",
+      "corporateInfo": "Thông tin công ty",
+      "corporateStatements": "Báo cáo doanh nghiệp",
+      "careers": "Nghề nghiệp"
+    },
+    "visitAndExplore": {
+      "title": "Tham quan & Khám phá",
+      "storeLocation": "Định vị cửa hàng",
+      "corporateSalesAndEvents": "Hợp tác bán hàng & Sự kiện",
+      "giftCards": "Thẻ quà tặng",
+      "ourStories": "Câu chuyện của chúng tôi",
+      "ourPeopleAndOurWorkPlace": "Con người & Nơi làm việc của chúng tôi",
+      "ourSustainablePractice": "Hoạt động bền vững",
+      "ingredientGlossary": "Bảng thuật ngữ thành phần",
+      "seasonalMoments": "Khoảnh khắc theo mùa"
+    },
+    "privacyAndTerms": {
+      "title": "Quyền riêng tư & Điều khoản",
+      "termsAndConditions": "Điều khoản & Điều kiện",
+      "privacyPolicy": "Chính sách bảo mật",
+      "termsOfSale": "Điều khoản bán hàng",
+      "manageCookies": "Quản lý Cookies"
+    },
+    "social": {
+      "title": "Mạng xã hội",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "pinterest": "Pinterest",
+      "x": "X",
+      "youtube": "Youtube"
+    },
+    "locationAndLanguage": {
+      "title": "Vị trí & Ngôn ngữ",
+      "location": "Vị trí - Việt Nam",
+      "language": "Ngôn ngữ - Tiếng Việt"
+    }
+  }
+}
