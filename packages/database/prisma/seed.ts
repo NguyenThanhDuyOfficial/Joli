@@ -352,11 +352,11 @@ const PRODUCTS_BY_CATEGORY: Record<
 // Unsplash image IDs theo category
 const IMAGE_POOL: Record<string, string[]> = {
   nen: [
-    'photo-1602874801006-e26c4c5b5e8a',
     'photo-1608571423902-eed4a5ad8108',
-    'photo-1603006905003-be475563bc59',
     'photo-1601049676869-702ea24cfd58',
-    'photo-1610461888750-10bfc601b874',
+    'photo-1513506003901-1e6a229e2d15',
+    'photo-1574269909862-7e1d70bb8078',
+    'photo-1512413914633-b5043f4041ea',
   ],
   'nuoc-hoa': [
     'photo-1541643600914-78b084683601',
@@ -367,17 +367,17 @@ const IMAGE_POOL: Record<string, string[]> = {
   ],
   'sua-tam': [
     'photo-1556228720-195a672e8a03',
-    'photo-1608248543803-ba4f8c70ae0b',
+    'photo-1556228453-efd6c1ff04f6',
     'photo-1571781926291-c477ebfd024b',
     'photo-1585232004423-244e0e6904e3',
     'photo-1600857062241-98e5dba7f214',
   ],
   'tinh-dau': [
     'photo-1608571423902-eed4a5ad8108',
-    'photo-1603006905003-be475563bc59',
-    'photo-1610461888750-10bfc601b874',
     'photo-1601049676869-702ea24cfd58',
-    'photo-1602874801006-e26c4c5b5e8a',
+    'photo-1513506003901-1e6a229e2d15',
+    'photo-1556228453-efd6c1ff04f6',
+    'photo-1574269909862-7e1d70bb8078',
   ],
 };
 
@@ -454,11 +454,10 @@ async function main() {
           description: template.description,
           starRating: randomBetween(30, 50) / 10, // 3.0 - 5.0
           reviewCount: randomBetween(10, 500),
-          loveCount: randomBetween(5, 1000),
 
           // Gán category
           categories: {
-            create: [{ categoryId, isPrimary: true }],
+            create: [{ categoryId }],
           },
 
           // Gán tags
@@ -478,7 +477,6 @@ async function main() {
         const variant = await prisma.productVariant.create({
           data: {
             productId: product.id,
-            sku: `${slug.toUpperCase()}-${i + 1}`,
             size: v.size ?? null,
             color: v.color ?? null,
             price,

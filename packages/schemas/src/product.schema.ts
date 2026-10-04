@@ -137,3 +137,4 @@ export type Product = z.infer<typeof ProductSchema>;
 export type ProductListDTO = z.infer<typeof ProductListDTOSchema>;
 export type ProductListParams = z.infer<typeof ProductListParamsSchema>;
 export type ProductDetailDTO = z.infer<typeof ProductDetailDTOSchema>;
+export type ProductListItemDTO = z.infer<typeof ProductListItemDTOSchema>;
