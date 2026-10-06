@@ -1,5 +1,10 @@
+import FilterBar from "@/src/components/FilterBar";
 import ProductCard from "../../components/ProductCard";
-import { ProductListItemDTO } from "@nguyenthanhduyofficial/schemas";
+import {
+  ProductListDTO,
+  ProductListItemDTO,
+} from "@nguyenthanhduyofficial/schemas";
+import { ProductPagination } from "@/src/components/ProductPagination";
 
 export default async function ProductsPage({
   searchParams,
@@ -16,16 +21,21 @@ export default async function ProductsPage({
 
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
 
-  const { data, pagination } = await res.json();
-  if (!data && data?.length === 0) return <p>Loading</p>;
+  const { data, pagination }: ProductListDTO = await res.json();
+  if (!data) return <p>Loading</p>;
 
   return (
     <main>
+      <FilterBar />
       <div className="grid grid-cols-2 gap-1 px-2">
         {data.map((product: ProductListItemDTO) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+      <ProductPagination
+        totalPages={pagination.totalPages}
+        currentPage={pagination.page}
+      />
     </main>
   );
 }

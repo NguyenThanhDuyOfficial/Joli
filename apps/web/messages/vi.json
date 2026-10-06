@@ -6,7 +6,12 @@
     "colognes": "Nước Hoa",
     "candle": "Nến",
     "body-hand-wash": "Sữa Tắm & Nước Rửa Tay",
-    "diffusers-refills": "Tinh dầu"
+    "diffusers-refills": "Tinh dầu",
+    "sort": {
+      "title": "Sắp xếp theo",
+      "bestsellers": "Bán chạy",
+      "newest": "Mới nhất"
+    }
   },
   "Benefit": {
     "title": "Quyền Lợi Tặng Kèm",

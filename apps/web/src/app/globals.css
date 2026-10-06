@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@import "@nguyenthanhduyofficial/ui/globals.css";
 
 @theme {
   --color-background: var(--background);

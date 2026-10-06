@@ -21,7 +21,8 @@ export default function ProductCard({
           alt={product.variants[variantIndex].images[0].alt ?? ""}
           fill
           className="object-cover"
-          sizes="100vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          loading="eager"
         />
       </Link>
       <p className="text-base line-clamp-2 h-full">{product.name}</p>
