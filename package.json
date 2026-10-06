@@ -1,37 +1,44 @@
 {
   "name": "nguyenthanhduyofficial",
   "version": "1.0.0",
-  "description": "",
-  "author": "nguyenthanhduyofficial",
-  "license": "GPL-3.0-only",
+  "license": "PROPRIETARY",
   "private": true,
   "scripts": {
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check",
-    "db:generate": "turbo run generate",
-    "db:seed": "turbo run seed",
-    "db:migrate:dev": "turbo run migrate:dev && pnpm db:test:migrate:dev",
-    "db:migrate:reset": "turbo run migrate:reset",
-    "db:migrate:deploy": "turbo run migrate:deploy",
-    "db:test:migrate:dev": "turbo run test:migrate:dev",
-    "db:test:migrate:reset": "turbo run test:migrate:test",
-    "db:migrate:test": "turbo run migrate:test",
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "test:e2e": "turbo run test:e2e",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "format": "turbo format",
+    "db:generate": "turbo generate",
+    "db:seed": "turbo seed",
+    "db:migrate:dev": "turbo migrate:dev && pnpm db:test:migrate:dev",
+    "db:migrate:reset": "turbo migrate:reset",
+    "db:migrate:deploy": "turbo migrate:deploy",
+    "db:test:migrate:dev": "turbo test:migrate:dev",
+    "db:test:migrate:reset": "turbo test:migrate:test",
+    "db:migrate:test": "turbo migrate:test",
+    "test": "turbo test",
+    "test:e2e": "turbo test:e2e",
     "prepare": "husky",
-    "contract:emit": "turbo run contract:emit",
-    "test:coverage": "turbo run test:coverage",
-    "test:watch": "turbo run test:watch"
+    "contract:emit": "turbo contract:emit",
+    "test:coverage": "turbo test:coverage",
+    "test:watch": "turbo test:watch"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
+    "@nguyenthanhduyofficial/eslint-config": "workspace:*",
+    "@nguyenthanhduyofficial/typescript-config": "workspace:*",
     "@changesets/cli": "^3.0.1",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
-    "@nguyenthanhduyofficial/eslint-config": "workspace:*",
-    "@nguyenthanhduyofficial/typescript-config": "workspace:*",
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "@typescript-eslint/parser": "^8.67.0",
@@ -53,6 +60,6 @@
     }
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.9.0"
   }
 }

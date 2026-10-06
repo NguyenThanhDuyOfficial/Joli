@@ -1,11 +1,11 @@
-import { getTranslations } from 'next-intl/server';
-import ProductCard from './ProductCard';
-import { ProductListItemDTO } from '@nguyenthanhduyofficial/schemas';
+import { getTranslations } from "next-intl/server";
+import ProductCard from "./ProductCard";
+import { ProductListItemDTO } from "@nguyenthanhduyofficial/schemas";
 
 export default async function MostLovedSection() {
-  const t = await getTranslations('Products');
+  const t = await getTranslations("Products");
   const res = await fetch(
-    'http://localhost:3000/api/v1/products?limit=5&sort=bestsellers',
+    `${process.env.BASE_URL}/api/v1/products?limit=5&sort=bestsellers`,
   );
   const result = await res.json();
   const products = result.data;
@@ -13,7 +13,7 @@ export default async function MostLovedSection() {
   return (
     <section>
       <h3 className="w-full py-8 text-center text-lg md:text-xl font-medium">
-        {t('mostLoved')}
+        {t("mostLoved")}
       </h3>
       <div className="flex gap-4 overflow-x-auto px-4 scroll-auto">
         {products.map((product: ProductListItemDTO) => (

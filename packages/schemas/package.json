@@ -57,8 +57,9 @@
     "url": "https://github.com/NguyenThanhDuyOfficial/template"
   },
   "scripts": {
-    "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@nguyenthanhduyofficial/typescript-config": "workspace:*",

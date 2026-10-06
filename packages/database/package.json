@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "generate": "pnpm prisma generate",
     "seed": "dotenv run -f .env.local -- pnpm dlx tsx prisma/seed.ts",
     "migrate:dev": "dotenv run -f .env.local -- prisma migrate dev",
