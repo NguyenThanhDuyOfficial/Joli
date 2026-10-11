@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { OrderSchema } from './order.schema';
-import { ProductSchema } from './product.schema';
+import { z } from "zod";
+import { OrderSchema } from "./order.schema";
+import { ProductSchema } from "./product.schema";
 
 export const UserRoleSchema = z
-  .enum(['admin', 'user', 'manager'])
-  .default('user');
+  .enum(["admin", "user", "manager"])
+  .default("user");
 
 export const UserSchema = z.object({
   id: z.uuid(),

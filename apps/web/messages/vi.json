@@ -83,5 +83,26 @@
       "location": "Vị trí - Việt Nam",
       "language": "Ngôn ngữ - Tiếng Việt"
     }
+  },
+  "Auth": {
+    "signUp": "Đăng Ký",
+    "signIn": "Đăng nhập",
+    "email": "Địa chỉ Email",
+    "password": "Mật khẩu",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "name": "Tên người dùng",
+    "confirmPassword": "Nhập lại mật khẩu",
+    "acceptTerm": "Tôi đồng ý với Điều khoản & Chính sách",
+
+    "EMAIL_INVALID": "Email không hợp lệ",
+    "EMAIL_MIN": "Email quá ngắn",
+    "EMAIL_MAX": "Email quá dài",
+    "PASSWORD_MIN": "Mật khẩu quá ngắn",
+    "PASSWORD_MAX": "Mật khẩu quá dài",
+    "NAME_MIN": "Tên quá ngắn",
+    "NAME_MAX": "Tên quá dài",
+    "CONFIRM_PASSWORD_MIN": "Xác nhận mật khẩu quá ngắn",
+    "ACCEPT_TERM": "Bạn phải đồng ý với điều khoản",
+    "CONFIRM_PASSWORD_INVALID": "Mật khẩu xác nhận không khớp"
   }
 }
