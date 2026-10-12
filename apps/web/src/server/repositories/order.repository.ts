@@ -1,8 +1,9 @@
-import { Prisma, prisma } from '@nguyenthanhduyofficial/database';
+import { Prisma, prisma } from "@nguyenthanhduyofficial/database";
 import {
+  CreateCheckOutSession,
   CreateOrderParams,
   OrderListParams,
-} from '@nguyenthanhduyofficial/schemas';
+} from "@nguyenthanhduyofficial/schemas";
 
 export class OrderRepository {
   async create(params: CreateOrderParams) {
@@ -10,12 +11,12 @@ export class OrderRepository {
       userId,
       shippingId,
       code,
-      status = 'pending',
+      status = "pending",
       subtotal,
       shippingFee = 0,
       total,
       paymentMethod,
-      paymentStatus = 'unpaid',
+      paymentStatus = "unpaid",
       items,
     } = params ?? {};
 
@@ -70,6 +71,28 @@ export class OrderRepository {
       select: orderDetailSelect,
     });
     return order;
+  }
+
+  async createCheckoutSession(params: CreateCheckOutSession) {
+    const { userId, subTotal, expiresAt, items } = params;
+    const session = await prisma.checkoutSession.create({
+      data: {
+        userId,
+        subTotal,
+        expiresAt,
+        items: {
+          create: items.map((item) => ({
+            productId: item.productId,
+            variantId: item.variantId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            subTotal: item.subTotal,
+          })),
+        },
+      },
+      select: { id: true, userId: true, subTotal: true, items: true },
+    });
+    return session;
   }
 }
 export const orderDetailSelect: Prisma.OrderSelect = {

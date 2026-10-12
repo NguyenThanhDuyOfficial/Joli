@@ -1,24 +1,31 @@
 import {
+  CreateCheckOutSessionDTO,
   CreateOrderParams,
   OrderDTO,
   OrderListDTO,
   OrderListParams,
-} from '@nguyenthanhduyofficial/schemas';
-import { OrderDetailResult, OrderRepository } from '../repositories';
-import { NotFoundError } from '../error';
+} from "@nguyenthanhduyofficial/schemas";
+import {
+  OrderDetailResult,
+  OrderRepository,
+  ProductRepository,
+} from "../repositories";
+import { BadRequestError, ConflictError, NotFoundError } from "../error";
 
 export class OrderService {
-  constructor(private readonly orderRepo: OrderRepository) {}
+  constructor(
+    private readonly orderRepo: OrderRepository,
+    private readonly productRepo: ProductRepository,
+  ) {}
 
   async create(params: CreateOrderParams): Promise<OrderDTO> {
-    const order = await this.orderRepo.create(params);
-    return transformToDTO(order);
+    return await this.orderRepo.create(params);
   }
   async getList(params: OrderListParams): Promise<OrderListDTO> {
     const { page = 1, limit = 20 } = params;
     const { data, total } = await this.orderRepo.findMany(params);
     return {
-      data: data.map((order) => transformToDTO(order)),
+      data,
       pagination: {
         page,
         limit,
@@ -30,23 +37,59 @@ export class OrderService {
   async getById(id: string): Promise<OrderDTO> {
     const order = await this.orderRepo.findById(id);
     if (!order) {
-      throw new NotFoundError('ORDER_NOT_FOUND');
+      throw new NotFoundError("ORDER_NOT_FOUND");
     }
-    return transformToDTO(order);
+    return order;
   }
-}
+  async createCheckoutSession(params: CreateCheckOutSessionDTO) {
+    // VALIDATE AND BUILD ITEMS
+    if (!params.items.length) {
+      throw new BadRequestError("EMPTY_ITEMS");
+    }
+    if (params.items.length > 50) {
+      throw new BadRequestError("TOO_MANY_ITEMS");
+    }
 
-function transformToDTO(order: OrderDetailResult): OrderDTO {
-  const { items, shippingFee, total, subtotal, ...o } = order;
-  return {
-    ...o,
-    subtotal: Number(subtotal),
-    total: Number(total),
-    shippingFee: Number(shippingFee),
-    items: items.map(({ price, subtotal, ...i }) => ({
-      ...i,
-      subtotal: Number(subtotal),
-      price: Number(price),
-    })),
-  };
+    const variantIds = params.items.map((i) => i.variantId);
+    const variants = await this.productRepo.findVariantsByIds(variantIds);
+
+    const items = params.items.map((item) => {
+      const variant = variants.find((v) => v.id === item.variantId);
+
+      if (!variant) {
+        throw new NotFoundError(`VARIANT_NOT_FOUND`, `${item.variantId}`);
+      }
+      if (variant.stock < item.quantity) {
+        throw new ConflictError(
+          `OUT_OF_STOCK`,
+          `${variant.stock} < ${item.quantity}`,
+        );
+      }
+      if (variant.productId !== item.productId) {
+        throw new BadRequestError(
+          `PRODUCT_VARIANT_MISMATCH`,
+          `${variant.productId} !== ${item.productId}`,
+        );
+      }
+
+      return {
+        productId: item.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        unitPrice: variant.price,
+        subTotal: variant.price * item.quantity,
+      };
+    });
+
+    // SUBTOTAL & EXPIRESAT
+    const subTotal = items.reduce((sum, i) => sum + i.subTotal, 0);
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    return await this.orderRepo.createCheckoutSession({
+      userId: params.userId,
+      subTotal,
+      expiresAt,
+      items,
+    });
+  }
 }

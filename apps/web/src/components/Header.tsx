@@ -12,7 +12,6 @@ export default function Header() {
   const t = useTranslations("Auth");
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = authClient.useSession();
-  useEffect(() => console.log(session), [session]);
   return (
     <>
       <header className="fixed top-0 right-0 w-full h-15 z-50 px-5 py-2 flex justify-between items-center bg-background">

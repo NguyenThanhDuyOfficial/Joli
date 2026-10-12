@@ -1,53 +1,12 @@
 {
-  "//": [
-    "This config is based on https://docs.npmjs.com/cli/v10/configuring-npm/package-json?v=true#man",
-    "Below is the list of unused configuration options:",
-    [
-      "contributors",
-      "funding",
-      "files",
-      "browser",
-      "bin",
-      "man",
-      "directories",
-      "config",
-      "peerDependencies",
-      "peerDependenciesMeta",
-      "bundleDependencies",
-      "optionalDependencies",
-      "overrides",
-      "os",
-      "cpu",
-      "devEngines",
-      "publishConfig",
-      "workspaces"
-    ],
-    "Make changes as needed to suit your requirements.",
-    "Wishing you diligence, wisdom, and happiness."
-  ],
   "name": "@nguyenthanhduyofficial/database",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
-  "description": "Database for nguyenthanhduyofficial's projects",
-  "keywords": [],
-  "homepage": "https://github.com/NguyenThanhDuyOfficial/template",
-  "bugs": {
-    "url": "https://github.com/NguyenThanhDuyOfficial/template/issues",
-    "email": "nguyenthanhduyofficial@gmail.com"
-  },
-  "license": "GPL-3.0-only",
-  "author": {
-    "name": "nguyenThanhDuyOfficial",
-    "email": "nguyenthanhduyofficial@gmail.com"
-  },
   "exports": {
     ".": "./prisma/prisma.ts"
   },
   "main": "./prisma/prisma.ts",
-  "repository": {
-    "type": "github",
-    "url": "https://github.com/NguyenThanhDuyOfficial/template"
-  },
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -72,6 +31,5 @@
     "@types/pg": "^8.23.1",
     "prisma": "^7.10.0",
     "typescript": "^5.9.3"
-  },
-  "private": true
+  }
 }

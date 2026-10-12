@@ -18,10 +18,11 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  orders       Order[]
-  productLoves ProductLove[]
-  sessions     Session[]
-  accounts     Account[]
+  orders           Order[]
+  productLoves     ProductLove[]
+  sessions         Session[]
+  accounts         Account[]
+  checkoutSessions CheckoutSession[]
 
   @@map("user")
 }
@@ -100,7 +101,7 @@ model ProductVariant {
   productId String   @map("product_id")
   size      String?
   color     String?
-  price     Decimal  @db.Decimal(15, 2)
+  price     Int
   stock     Int      @default(0)
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
@@ -186,6 +187,51 @@ model ProductLove {
   @@map("product_loves")
 }
 
+enum CheckoutSessionStatus {
+  DRAFT
+  CONVERTED
+  EXPIRED
+  CANCELLED
+}
+
+model CheckoutSessionItem {
+  id        String          @id @default(cuid())
+  sessionId String
+  session   CheckoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  productId String
+  variantId String
+  quantity  Int
+
+  unitPrice Int
+  subTotal  Int
+
+  @@unique([sessionId, variantId])
+  @@index([sessionId])
+}
+
+model CheckoutSession {
+  id      String  @id @default(cuid())
+  userId  String
+  orderId String? @unique
+
+  subTotal Int
+  total    Int?
+  status   CheckoutSessionStatus @default(DRAFT)
+
+  expiresAt DateTime
+
+  user  User                  @relation(fields: [userId], references: [id])
+  order Order?                @relation(fields: [orderId], references: [id])
+  items CheckoutSessionItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, orderId, status])
+  @@index([expiresAt])
+}
+
 enum OrderStatus {
   pending
   paid
@@ -215,9 +261,9 @@ model Order {
   shippingId    String?       @unique @map("shipping_id")
   code          String        @unique
   status        OrderStatus   @default(pending)
-  subtotal      Decimal       @db.Decimal(15, 2)
-  shippingFee   Decimal       @default(0) @map("shipping_fee") @db.Decimal(15, 2)
-  total         Decimal       @db.Decimal(15, 2)
+  subtotal      Int
+  shippingFee   Int           @default(0) @map("shipping_fee")
+  total         Int
   paymentMethod PaymentMethod @map("payment_method")
   paymentStatus PaymentStatus @default(unpaid) @map("payment_status")
   createdAt     DateTime      @default(now()) @map("created_at")
@@ -225,8 +271,9 @@ model Order {
 
   items OrderItem[]
 
-  user     User      @relation(fields: [userId], references: [id])
-  shipping Shipping? @relation(fields: [shippingId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+  shipping        Shipping?        @relation(fields: [shippingId], references: [id])
+  checkoutSession CheckoutSession?
 
   @@index([userId])
   @@index([code])
@@ -235,15 +282,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(uuid())
-  orderId   String  @map("order_id")
-  productId String  @map("product_id")
-  variantId String  @map("variant_id")
+  id        String @id @default(uuid())
+  orderId   String @map("order_id")
+  productId String @map("product_id")
+  variantId String @map("variant_id")
   name      String
-  imageUrl  String  @map("image_url")
-  price     Decimal @db.Decimal(15, 2)
+  imageUrl  String @map("image_url")
+  price     Int
   quantity  Int
-  subtotal  Decimal @db.Decimal(15, 2)
+  subtotal  Int
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])

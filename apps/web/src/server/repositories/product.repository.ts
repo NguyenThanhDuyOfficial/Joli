@@ -1,9 +1,9 @@
-import { prisma } from '@nguyenthanhduyofficial/database';
-import type { Prisma } from '@nguyenthanhduyofficial/database';
+import { prisma } from "@nguyenthanhduyofficial/database";
+import type { Prisma } from "@nguyenthanhduyofficial/database";
 import {
   type ProductListParams,
   type SortParam,
-} from '@nguyenthanhduyofficial/schemas';
+} from "@nguyenthanhduyofficial/schemas";
 
 export class ProductRepository {
   async findMany(params?: ProductListParams) {
@@ -11,7 +11,7 @@ export class ProductRepository {
       category,
       tag,
       search,
-      sort = 'newest',
+      sort = "newest",
       page = 1,
       limit = 20,
     } = params ?? {};
@@ -120,16 +120,21 @@ export class ProductRepository {
       },
     });
   }
+  async findVariantsByIds(ids: string[]) {
+    return prisma.productVariant.findMany({
+      where: { id: { in: ids } },
+    });
+  }
 }
 
 export function getOrderBy(
   sort: SortParam,
 ): Prisma.ProductOrderByWithRelationInput {
   switch (sort) {
-    case 'bestsellers':
-      return { orderItems: { _count: 'desc' } };
-    case 'newest':
+    case "bestsellers":
+      return { orderItems: { _count: "desc" } };
+    case "newest":
     default:
-      return { createdAt: 'desc' };
+      return { createdAt: "desc" };
   }
 }

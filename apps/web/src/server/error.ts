@@ -6,7 +6,7 @@ export class AppError extends Error {
     public details?: unknown,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
   }
 }
 
@@ -17,13 +17,18 @@ export class NotFoundError extends AppError {
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message = 'Chưa xác thực') {
-    super('UNAUTHORIZED', message, 401);
+  constructor(code: string, message?: string) {
+    super(code, message, 401);
   }
 }
 
 export class BadRequestError extends AppError {
-  constructor(code: string, message: string, details?: unknown) {
+  constructor(code: string, message?: string, details?: unknown) {
     super(code, message, 400, details);
+  }
+}
+export class ConflictError extends AppError {
+  constructor(code: string, message?: string) {
+    super(code, message, 409);
   }
 }

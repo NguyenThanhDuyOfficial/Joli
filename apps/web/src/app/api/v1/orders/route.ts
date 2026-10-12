@@ -1,18 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '../../../../server/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "../../../../server/auth";
 import {
   CreateOrderParamsSchema,
   OrderListParamsSchema,
-} from '@nguyenthanhduyofficial/schemas';
-import { orderService } from '../../../../server/container';
-import z from 'zod';
+} from "@nguyenthanhduyofficial/schemas";
+import { orderService } from "../../../../server/container";
+import z from "zod";
 
 export async function GET(req: NextRequest) {
   const session = await auth.api.getSession({
     headers: req.headers,
   });
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const parsed = OrderListParamsSchema.safeParse(
@@ -34,14 +34,14 @@ export async function POST(req: NextRequest) {
   });
 
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
   const parsed = CreateOrderParamsSchema.safeParse(await req.json());
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: 'Invalid params', details: z.flattenError(parsed.error) },
+      { error: "Invalid params", details: z.flattenError(parsed.error) },
       { status: 400 },
     );
   }
