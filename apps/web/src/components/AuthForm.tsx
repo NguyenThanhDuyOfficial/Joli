@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 
 export default function AuthForm() {
   const t = useTranslations("Auth");
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
   return (
     <div className="mx-4 p-4 border rounded-lg space-y-8 bg-card">
       <div className="w-full flex gap-4">
@@ -56,6 +56,8 @@ function SignInForm() {
   const router = useRouter();
   const t = useTranslations("Auth");
 
+  const [error, setError] = useState("");
+
   const form = useForm({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -71,8 +73,11 @@ function SignInForm() {
       password: values.password,
       rememberMe: values.rememberMe,
     });
-
-    router.push("/dashboard");
+    if (error?.code) {
+      setError(error?.code);
+      return;
+    }
+    router.push("/");
   }
   return (
     <div>
@@ -140,6 +145,8 @@ function SignInForm() {
               </Field>
             )}
           />
+
+          {error && <FieldError errors={[{ message: t(error) }]} />}
           <Button size="lg" type="submit">
             {t("signIn")}
           </Button>
@@ -161,6 +168,7 @@ function SignUpForm() {
       acceptTerm: false,
     },
   });
+  const [error, setError] = useState("");
   async function onSubmit(values: SignUpType) {
     const { error } = await authClient.signUp.email({
       name: values.name,
@@ -168,6 +176,10 @@ function SignUpForm() {
       password: values.password,
     });
 
+    if (error?.code) {
+      setError(error.code);
+      return;
+    }
     router.push("/");
   }
   return (
@@ -282,6 +294,8 @@ function SignUpForm() {
               </Field>
             )}
           />
+
+          {error && <FieldError errors={[{ message: t(error) }]} />}
           <Button size="lg" type="submit">
             {t("signUp")}
           </Button>

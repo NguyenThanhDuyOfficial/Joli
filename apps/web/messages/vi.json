@@ -87,6 +87,7 @@
   "Auth": {
     "signUp": "Đăng Ký",
     "signIn": "Đăng nhập",
+    "signOut": "Đăng xuất",
     "email": "Địa chỉ Email",
     "password": "Mật khẩu",
     "rememberMe": "Ghi nhớ đăng nhập",
@@ -103,6 +104,7 @@
     "NAME_MAX": "Tên quá dài",
     "CONFIRM_PASSWORD_MIN": "Xác nhận mật khẩu quá ngắn",
     "ACCEPT_TERM": "Bạn phải đồng ý với điều khoản",
-    "CONFIRM_PASSWORD_INVALID": "Mật khẩu xác nhận không khớp"
+    "CONFIRM_PASSWORD_INVALID": "Mật khẩu xác nhận không khớp",
+    "INVALID_EMAIL_OR_PASSWORD": "Email hoặc Mật khẩu không đúng"
   }
 }
