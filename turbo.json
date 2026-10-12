@@ -12,7 +12,7 @@
     "typecheck": { "dependsOn": ["^typecheck"] },
     "dev": { "cache": false, "persistent": true },
     "generate": {},
-    "seed": {},
+    "seed": { "persistent": true },
     "migrate:dev": { "persistent": true },
     "migrate:reset": {},
     "migrate:deploy": {},

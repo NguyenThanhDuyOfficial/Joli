@@ -7,14 +7,21 @@ import { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
 import { authClient } from "../lib/auth-client";
 import { useTranslations } from "next-intl";
+import { useAuthStore } from "../stores/auth-store";
+import { useShallow } from "zustand/shallow";
 
 export default function Header() {
   const t = useTranslations("Auth");
-  const [isOpen, setIsOpen] = useState(false);
+  const { isAuthModalOpen, toggleAuthModal } = useAuthStore(
+    useShallow((s) => ({
+      isAuthModalOpen: s.isAuthModalOpen,
+      toggleAuthModal: s.toggleAuthModal,
+    })),
+  );
   const { data: session } = authClient.useSession();
   return (
     <>
-      <header className="fixed top-0 right-0 w-full h-15 z-50 px-5 py-2 flex justify-between items-center bg-background">
+      <header className="sticky top-0 right-0 w-full h-15 z-50 px-5 py-2 flex justify-between items-center bg-background">
         <div>
           <Menu />
         </div>
@@ -30,14 +37,14 @@ export default function Header() {
             variant="ghost"
             size="icon"
             className="rounded-full"
-            onClick={() => setIsOpen((v) => !v)}
+            onClick={toggleAuthModal}
           >
             {session ? <User /> : <LogIn />}
           </Button>
         </div>
       </header>
 
-      {isOpen &&
+      {isAuthModalOpen &&
         (session ? (
           <div className="fixed top-15 right-0 z-40 p-2 pt-2 mr-2 rounded-b-lg bg-background">
             <Button onClick={async () => await authClient.signOut()}>

@@ -1,15 +1,11 @@
 import {
-  CreateCheckOutSessionDTO,
+  CreateCheckOutSessionInput,
   CreateOrderParams,
   OrderDTO,
   OrderListDTO,
   OrderListParams,
 } from "@nguyenthanhduyofficial/schemas";
-import {
-  OrderDetailResult,
-  OrderRepository,
-  ProductRepository,
-} from "../repositories";
+import { OrderRepository, ProductRepository } from "../repositories";
 import { BadRequestError, ConflictError, NotFoundError } from "../error";
 
 export class OrderService {
@@ -41,7 +37,11 @@ export class OrderService {
     }
     return order;
   }
-  async createCheckoutSession(params: CreateCheckOutSessionDTO) {
+
+  async getCheckoutSessionById(id: string) {
+    return await this.orderRepo.findCheckoutSessionById(id);
+  }
+  async createCheckoutSession(params: CreateCheckOutSessionInput) {
     // VALIDATE AND BUILD ITEMS
     if (!params.items.length) {
       throw new BadRequestError("EMPTY_ITEMS");
@@ -71,12 +71,18 @@ export class OrderService {
           `${variant.productId} !== ${item.productId}`,
         );
       }
+      const primaryImage = variant.images[0];
+      if (!primaryImage) {
+        throw new NotFoundError("VARIANT_IMAGE_NOT_FOUND");
+      }
 
       return {
         productId: item.productId,
         variantId: item.variantId,
-        quantity: item.quantity,
+        productImageId: primaryImage.id,
         unitPrice: variant.price,
+        name: variant.product.name,
+        quantity: item.quantity,
         subTotal: variant.price * item.quantity,
       };
     });
@@ -89,7 +95,7 @@ export class OrderService {
       userId: params.userId,
       subTotal,
       expiresAt,
-      items,
+      items: { create: items },
     });
   }
 }

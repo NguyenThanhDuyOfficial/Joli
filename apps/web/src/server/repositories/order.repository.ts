@@ -1,6 +1,5 @@
 import { Prisma, prisma } from "@nguyenthanhduyofficial/database";
 import {
-  CreateCheckOutSession,
   CreateOrderParams,
   OrderListParams,
 } from "@nguyenthanhduyofficial/schemas";
@@ -73,26 +72,36 @@ export class OrderRepository {
     return order;
   }
 
-  async createCheckoutSession(params: CreateCheckOutSession) {
-    const { userId, subTotal, expiresAt, items } = params;
-    const session = await prisma.checkoutSession.create({
-      data: {
-        userId,
-        subTotal,
-        expiresAt,
+  async createCheckoutSession(
+    params: Prisma.CheckoutSessionUncheckedCreateInput,
+  ) {
+    return prisma.checkoutSession.create({
+      data: params,
+      select: {
+        id: true,
+      },
+    });
+  }
+  async findCheckoutSessionById(id: string) {
+    return prisma.checkoutSession.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        subTotal: true,
+        total: true,
         items: {
-          create: items.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            subTotal: item.subTotal,
-          })),
+          select: {
+            id: true,
+            variantId: true,
+            name: true,
+            unitPrice: true,
+            quantity: true,
+            subTotal: true,
+            image: { select: { url: true, alt: true } },
+          },
         },
       },
-      select: { id: true, userId: true, subTotal: true, items: true },
     });
-    return session;
   }
 }
 export const orderDetailSelect: Prisma.OrderSelect = {

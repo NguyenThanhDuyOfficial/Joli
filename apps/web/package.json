@@ -28,7 +28,8 @@
     "react-dom": "19.2.8",
     "react-hook-form": "^7.89.0",
     "tailwind-merge": "^3.7.0",
-    "zod": "link:@hookform/resolvers/zod"
+    "zod": "link:@hookform/resolvers/zod",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@nguyenthanhduyofficial/typescript-config": "workspace:*",

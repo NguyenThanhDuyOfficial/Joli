@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { PaginationSchema } from "./common.schema";
 import { UserSchema } from "./user.schema";
+import { ProductImageSchema } from "./product.schema";
 
 export const OrderStatusSchema = z.enum([
   "pending",
@@ -159,47 +160,32 @@ export const CheckoutSessionStatusSchema = z.enum([
 ]);
 
 export const CheckoutSessionItemSchema = z.object({
-  id: z.cuid2(),
-  sessionId: z.cuid2(),
-  productId: z.cuid2(),
-  variantId: z.cuid2(),
-  quantity: z.int(),
+  id: z.string(),
+  sessionId: z.string(),
+  productId: z.string(),
+  variantId: z.string(),
+  productImageId: z.string(),
+
+  name: z.string(),
   unitPrice: z.int(),
+  quantity: z.int(),
   subTotal: z.int(),
 });
 
 export const CheckoutSessionSchema = z.object({
-  id: z.cuid2(),
-  userId: z.cuid2(),
-  orderId: z.cuid2().optional(),
+  id: z.string(),
+  userId: z.string(),
+  orderId: z.string().optional(),
+
   subTotal: z.int(),
   total: z.int().optional(),
   status: CheckoutSessionStatusSchema.default("DRAFT"),
   expiresAt: z.coerce.date(),
-  user: UserSchema,
-  order: OrderSchema.optional(),
-  items: z.array(CheckoutSessionItemSchema),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
-export const CreateCheckOutSessionSchema = CheckoutSessionSchema.pick({
-  userId: true,
-  subTotal: true,
-  expiresAt: true,
-}).extend({
-  items: z.array(
-    CheckoutSessionItemSchema.pick({
-      productId: true,
-      variantId: true,
-      quantity: true,
-      unitPrice: true,
-      subTotal: true,
-    }),
-  ),
-});
-
-export const CreateCheckOutSessionDTOSchema = CheckoutSessionSchema.pick({
+export const CreateCheckOutSessionInputSchema = CheckoutSessionSchema.pick({
   userId: true,
 }).extend({
   items: z.array(
@@ -217,7 +203,7 @@ export type OrderListDTO = z.infer<typeof OrderListDTOSchema>;
 export type OrderListItemDTO = z.infer<typeof OrderListItemDTOSchema>;
 export type OrderListParams = z.infer<typeof OrderListParamsSchema>;
 
-export type CreateCheckOutSession = z.infer<typeof CreateCheckOutSessionSchema>;
-export type CreateCheckOutSessionDTO = z.infer<
-  typeof CreateCheckOutSessionDTOSchema
+export type CheckoutSession = z.infer<typeof CheckoutSessionSchema>;
+export type CreateCheckOutSessionInput = z.infer<
+  typeof CreateCheckOutSessionInputSchema
 >;

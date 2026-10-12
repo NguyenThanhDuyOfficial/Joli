@@ -106,5 +106,17 @@
     "ACCEPT_TERM": "Bạn phải đồng ý với điều khoản",
     "CONFIRM_PASSWORD_INVALID": "Mật khẩu xác nhận không khớp",
     "INVALID_EMAIL_OR_PASSWORD": "Email hoặc Mật khẩu không đúng"
+  },
+  "Checkout": {
+    "shoppingBag": "Túi mua sắm",
+    "product": "Mặt hàng",
+    "wrapGift": "KÈM DỊCH VU GÓI QUÁ MIỄN PHÍ\n(CÓ NGOẠI LỆ)",
+    "quantity": "Số lượng",
+    "subTotal": "Tổng tiền hàng",
+    "total": "TỔNG CỘNG",
+    "includeVAT": "Đã bao gồm VAT",
+    "needHelp": "Cần Trợ Giúp",
+    "call": "Gọi",
+    "payment": "Thanh Toán"
   }
 }

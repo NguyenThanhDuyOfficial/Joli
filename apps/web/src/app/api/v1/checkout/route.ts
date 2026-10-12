@@ -1,7 +1,7 @@
 import { auth } from "@/src/server/auth";
 import { orderService } from "@/src/server/container";
 import { AppError } from "@/src/server/error";
-import { CreateCheckOutSessionDTOSchema } from "@nguyenthanhduyofficial/schemas";
+import { CreateCheckOutSessionInputSchema } from "@nguyenthanhduyofficial/schemas";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
     }
 
-    const parsed = CreateCheckOutSessionDTOSchema.safeParse(await req.json());
+    const parsed = CreateCheckOutSessionInputSchema.safeParse(await req.json());
 
     if (!parsed.success) {
       return NextResponse.json(

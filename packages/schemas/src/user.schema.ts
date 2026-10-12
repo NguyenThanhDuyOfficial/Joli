@@ -14,7 +14,7 @@ export const UserSchema = z.object({
   role: UserRoleSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
-  orders: z.array(OrderSchema),
+  orders: z.lazy(() => z.array(OrderSchema)),
   get productLove() {
     return z.array(ProductSchema.omit({ loves: true }));
   },

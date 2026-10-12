@@ -9,14 +9,14 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String   @id @default(cuid())
   name          String
   email         String   @unique
-  emailVerified Boolean  @default(false) @map("email_verified")
+  emailVerified Boolean  @default(false)
   image         String?
   role          String   @default("user")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt     DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(3)
 
   orders           Order[]
   productLoves     ProductLove[]
@@ -77,11 +77,11 @@ model Verification {
 }
 
 model Product {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   name        String
   slug        String   @unique
   description String?
-  starRating  Decimal  @default(0) @map("star_rating") @db.Decimal(3, 2)
+  starRating  Decimal  @default(0) @map("star_rating") @db.Decimal(4, 2)
   reviewCount Int      @default(0) @map("review_count")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
@@ -97,7 +97,7 @@ model Product {
 }
 
 model ProductVariant {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   productId String   @map("product_id")
   size      String?
   color     String?
@@ -115,14 +115,15 @@ model ProductVariant {
 }
 
 model ProductImage {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   variantId String   @map("variant_id")
   url       String
   alt       String?
   isPrimary Boolean  @default(false) @map("is_primary")
   createdAt DateTime @default(now()) @map("created_at")
 
-  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variant              ProductVariant        @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  checkoutSessionItems CheckoutSessionItem[]
 
   @@index([variantId])
   @@map("product_images")
@@ -140,7 +141,7 @@ model ProductCategory {
 }
 
 model Category {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   parentId  String?  @map("parent_id")
   name      String
   slug      String   @unique
@@ -167,7 +168,7 @@ model ProductTag {
 }
 
 model Tag {
-  id   String @id @default(uuid())
+  id   String @id @default(cuid())
   name String @unique
   slug String @unique
 
@@ -195,19 +196,23 @@ enum CheckoutSessionStatus {
 }
 
 model CheckoutSessionItem {
-  id        String          @id @default(cuid())
-  sessionId String
-  session   CheckoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id             String @id @default(cuid())
+  sessionId      String
+  productId      String
+  variantId      String
+  productImageId String
 
-  productId String
-  variantId String
-  quantity  Int
-
+  name      String
   unitPrice Int
+  quantity  Int
   subTotal  Int
+
+  session CheckoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  image   ProductImage    @relation(fields: [productImageId], references: [id])
 
   @@unique([sessionId, variantId])
   @@index([sessionId])
+  @@map("checkout_session_item")
 }
 
 model CheckoutSession {
@@ -215,10 +220,9 @@ model CheckoutSession {
   userId  String
   orderId String? @unique
 
-  subTotal Int
-  total    Int?
-  status   CheckoutSessionStatus @default(DRAFT)
-
+  subTotal  Int
+  total     Int?
+  status    CheckoutSessionStatus @default(DRAFT)
   expiresAt DateTime
 
   user  User                  @relation(fields: [userId], references: [id])
@@ -230,44 +234,47 @@ model CheckoutSession {
 
   @@index([userId, orderId, status])
   @@index([expiresAt])
+  @@map("checkout_session")
 }
 
 enum OrderStatus {
-  pending
-  paid
-  shipping
-  delivered
-  cancelled
+  PENDING
+  PAID
+  SHIPPING
+  DELIVERED
+  CANCELLED
 }
 
 enum PaymentStatus {
-  unpaid
-  pending
-  paid
-  failed
-  refunded
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }
 
 enum PaymentMethod {
-  cod
-  vnpay
-  momo
-  bank_transfer
+  COD
+  VNPAY
+  MOMO
+  BANK_TRANSFER
 }
 
 model Order {
-  id            String        @id @default(uuid())
-  userId        String        @map("user_id")
-  shippingId    String?       @unique @map("shipping_id")
-  code          String        @unique
-  status        OrderStatus   @default(pending)
-  subtotal      Int
+  id     String @id @default(cuid())
+  userId String @map("user_id")
+  code   String @unique
+
+  status        OrderStatus   @default(PENDING)
+  subTotal      Int
   shippingFee   Int           @default(0) @map("shipping_fee")
   total         Int
   paymentMethod PaymentMethod @map("payment_method")
-  paymentStatus PaymentStatus @default(unpaid) @map("payment_status")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  paymentStatus PaymentStatus @default(UNPAID) @map("payment_status")
+  shippingName  Strng
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   items OrderItem[]
 
@@ -282,7 +289,7 @@ model Order {
 }
 
 model OrderItem {
-  id        String @id @default(uuid())
+  id        String @id @default(cuid())
   orderId   String @map("order_id")
   productId String @map("product_id")
   variantId String @map("variant_id")
@@ -300,8 +307,7 @@ model OrderItem {
 }
 
 model Shipping {
-  id      String  @id @default(uuid())
-  orderId String
+  id      String  @id @default(cuid())
   name    String
   phone   String
   address String

@@ -6,6 +6,11 @@ import {
 } from "@nguyenthanhduyofficial/schemas";
 
 export class ProductRepository {
+  async findById(id: string) {
+    return prisma.product.findUnique({
+      where: { id },
+    });
+  }
   async findMany(params?: ProductListParams) {
     const {
       category,
@@ -85,7 +90,7 @@ export class ProductRepository {
   }
 
   async findBySlug(slug: string, userId?: string) {
-    return prisma.product.findUnique({
+    return await prisma.product.findUnique({
       where: { slug },
       select: {
         id: true,
@@ -121,8 +126,20 @@ export class ProductRepository {
     });
   }
   async findVariantsByIds(ids: string[]) {
-    return prisma.productVariant.findMany({
+    return await prisma.productVariant.findMany({
       where: { id: { in: ids } },
+      select: {
+        id: true,
+        stock: true,
+        productId: true,
+        price: true,
+        product: { select: { name: true } },
+        images: {
+          where: { isPrimary: true },
+          select: { id: true },
+          take: 1,
+        },
+      },
     });
   }
 }

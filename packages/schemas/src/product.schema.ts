@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 import {
   CategoryParamSchema,
   LimitParamSchema,
@@ -7,9 +7,9 @@ import {
   SearchParamSchema,
   SortParamSchema,
   TagParamSchema,
-} from './common.schema';
-import { UserSchema } from './user.schema';
-import { OrderItemSchema } from './order.schema';
+} from "./common.schema";
+import { UserSchema } from "./user.schema";
+import { OrderItemSchema } from "./order.schema";
 
 export const ProductImageSchema = z.object({
   id: z.uuid(),
@@ -62,7 +62,7 @@ export const ProductSchema = z.object({
   get loves() {
     return z.array(UserSchema.omit({ productLove: true }));
   },
-  orderItem: z.array(OrderItemSchema),
+  orderItem: z.lazy(() => z.array(OrderItemSchema)),
 });
 
 export const ProductListItemDTOSchema = ProductSchema.pick({
