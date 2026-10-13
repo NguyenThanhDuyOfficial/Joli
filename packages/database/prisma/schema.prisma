@@ -8,13 +8,22 @@ datasource db {
   provider = "postgresql"
 }
 
+/// User ///
+enum UserRole {
+  USER
+  ADMIN
+  STAFF
+}
+
 model User {
-  id            String   @id @default(cuid())
+  role UserRole @default(USER)
+
+  /// Better Auth Fields
+  id            String   @id
   name          String
   email         String   @unique
   emailVerified Boolean  @default(false)
   image         String?
-  role          String   @default("user")
   createdAt     DateTime @default(now()) @db.Timestamptz(3)
   updatedAt     DateTime @updatedAt @db.Timestamptz(3)
 
@@ -28,6 +37,7 @@ model User {
 }
 
 model Session {
+  /// Better Auth Fields
   id        String   @id
   userId    String
   token     String   @unique
@@ -44,6 +54,7 @@ model Session {
 }
 
 model Account {
+  /// Better Auth Fields
   id                    String    @id
   userId                String
   accountId             String
@@ -65,6 +76,7 @@ model Account {
 }
 
 model Verification {
+  /// Better Auth Fields
   id         String   @id
   identifier String
   value      String
@@ -76,95 +88,29 @@ model Verification {
   @@map("verification")
 }
 
-model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
-  starRating  Decimal  @default(0) @map("star_rating") @db.Decimal(4, 2)
-  reviewCount Int      @default(0) @map("review_count")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+/// Product ///
+model ProductLove {
+  userId    String
+  productId String
 
-  variants   ProductVariant[]
-  categories ProductCategory[]
-  tags       ProductTag[]
-  loves      ProductLove[]
-  orderItems OrderItem[]
-
-  @@index([slug])
-  @@map("products")
-}
-
-model ProductVariant {
-  id        String   @id @default(cuid())
-  productId String   @map("product_id")
-  size      String?
-  color     String?
-  price     Int
-  stock     Int      @default(0)
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  images ProductImage[]
-
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  @@id([userId, productId])
   @@index([productId])
-  @@map("product_variants")
-}
-
-model ProductImage {
-  id        String   @id @default(cuid())
-  variantId String   @map("variant_id")
-  url       String
-  alt       String?
-  isPrimary Boolean  @default(false) @map("is_primary")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  variant              ProductVariant        @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  checkoutSessionItems CheckoutSessionItem[]
-
-  @@index([variantId])
-  @@map("product_images")
-}
-
-model ProductCategory {
-  productId  String @map("product_id")
-  categoryId String @map("category_id")
-
-  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@id([productId, categoryId])
-  @@map("product_categories")
-}
-
-model Category {
-  id        String   @id @default(cuid())
-  parentId  String?  @map("parent_id")
-  name      String
-  slug      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-
-  products ProductCategory[]
-
-  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryTree")
-
-  @@index([slug])
-  @@map("categories")
+  @@map("product_love")
 }
 
 model ProductTag {
-  productId String @map("product_id")
-  tagId     String @map("tag_id")
+  productId String
+  tagId     String
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([productId, tagId])
-  @@map("product_tags")
+  @@index([tagId])
+  @@map("product_tag")
 }
 
 model Tag {
@@ -174,20 +120,98 @@ model Tag {
 
   products ProductTag[]
 
-  @@map("tags")
+  @@map("tag")
 }
 
-model ProductLove {
-  userId    String @map("user_id")
-  productId String @map("product_id")
+model ProductCategory {
+  productId  String
+  categoryId String
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  @@id([userId, productId])
-  @@map("product_loves")
+  @@id([productId, categoryId])
+  @@index([categoryId])
+  @@map("product_category")
 }
 
+model Category {
+  id       String  @id @default(cuid())
+  parentId String?
+
+  name String
+  slug String @unique
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  parent   Category?         @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[]        @relation("CategoryTree")
+  products ProductCategory[]
+
+  @@index([parentId])
+  @@map("category")
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  variantId String
+
+  url       String
+  alt       String?
+  isPrimary Boolean @default(false)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([variantId])
+  @@map("product_image")
+}
+
+model ProductVariant {
+  id        String @id @default(cuid())
+  productId String
+
+  sku      String  @unique
+  size     String  @default("")
+  color    String  @default("")
+  price    Int
+  stock    Int     @default(0)
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  product Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images  ProductImage[]
+
+  @@index([productId])
+  @@map("product_variant")
+}
+
+model Product {
+  id String @id @default(cuid())
+
+  name        String
+  slug        String  @unique
+  description String?
+  starRating  Decimal @default(0) @db.Decimal(4, 2)
+  reviewCount Int     @default(0)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  variants   ProductVariant[]
+  categories ProductCategory[]
+  tags       ProductTag[]
+  loves      ProductLove[]
+
+  @@map("product")
+}
+
+/// CheckoutSession ///
 enum CheckoutSessionStatus {
   DRAFT
   CONVERTED
@@ -196,22 +220,24 @@ enum CheckoutSessionStatus {
 }
 
 model CheckoutSessionItem {
-  id             String @id @default(cuid())
-  sessionId      String
-  productId      String
-  variantId      String
-  productImageId String
+  id        String @id @default(cuid())
+  sessionId String
+  productId String
+  variantId String
 
   name      String
+  image     String
   unitPrice Int
   quantity  Int
   subTotal  Int
 
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
   session CheckoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  image   ProductImage    @relation(fields: [productImageId], references: [id])
 
   @@unique([sessionId, variantId])
-  @@index([sessionId])
+  @@index([variantId])
   @@map("checkout_session_item")
 }
 
@@ -220,23 +246,29 @@ model CheckoutSession {
   userId  String
   orderId String? @unique
 
-  subTotal  Int
-  total     Int?
   status    CheckoutSessionStatus @default(DRAFT)
-  expiresAt DateTime
+  subTotal  Int
+  total     Int
+  expiresAt DateTime              @db.Timestamptz(3)
 
-  user  User                  @relation(fields: [userId], references: [id])
-  order Order?                @relation(fields: [orderId], references: [id])
+  convertedAt   DateTime? @db.Timestamptz(3)
+  cancelledAt   DateTime? @db.Timestamptz(3)
+  cancelledNote String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order Order?                @relation(fields: [orderId], references: [id], onDelete: SetNull)
   items CheckoutSessionItem[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId, orderId, status])
+  @@index([userId, status])
+  @@index([status, expiresAt])
   @@index([expiresAt])
   @@map("checkout_session")
 }
 
+/// ORDER ///
 enum OrderStatus {
   PENDING
   PAID
@@ -260,60 +292,60 @@ enum PaymentMethod {
   BANK_TRANSFER
 }
 
-model Order {
-  id     String @id @default(cuid())
-  userId String @map("user_id")
-  code   String @unique
-
-  status        OrderStatus   @default(PENDING)
-  subTotal      Int
-  shippingFee   Int           @default(0) @map("shipping_fee")
-  total         Int
-  paymentMethod PaymentMethod @map("payment_method")
-  paymentStatus PaymentStatus @default(UNPAID) @map("payment_status")
-  shippingName  Strng
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  items OrderItem[]
-
-  user            User             @relation(fields: [userId], references: [id])
-  shipping        Shipping?        @relation(fields: [shippingId], references: [id])
-  checkoutSession CheckoutSession?
-
-  @@index([userId])
-  @@index([code])
-  @@index([status])
-  @@map("orders")
-}
-
 model OrderItem {
-  id        String @id @default(cuid())
-  orderId   String @map("order_id")
-  productId String @map("product_id")
-  variantId String @map("variant_id")
-  name      String
-  imageUrl  String @map("image_url")
-  price     Int
-  quantity  Int
-  subtotal  Int
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String?
+  variantId String?
 
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
+  name     String
+  image    String
+  price    Int
+  quantity Int
+  subTotal Int
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
-  @@map("order_items")
+  @@index([productId])
+  @@map("order_item")
 }
 
-model Shipping {
-  id      String  @id @default(cuid())
-  name    String
-  phone   String
-  address String
-  note    String?
+model Order {
+  id     String @id @default(cuid())
+  userId String
 
-  order Order?
+  code          String        @unique
+  status        OrderStatus   @default(PENDING)
+  subTotal      Int
+  shippingFee   Int           @default(0)
+  total         Int
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(UNPAID)
 
-  @@map("shippings")
+  shippingName    String
+  shippingPhone   String
+  shippingAddress String
+  note            String?
+
+  paidAt        DateTime? @db.Timestamptz(3)
+  shippedAt     DateTime? @db.Timestamptz(3)
+  deliveredAt   DateTime? @db.Timestamptz(3)
+  cancelledAt   DateTime? @db.Timestamptz(3)
+  cancelledNote String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items           OrderItem[]
+  checkoutSession CheckoutSession?
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
+  @@index([status])
+  @@index([createdAt])
+  @@map("order")
 }

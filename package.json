@@ -16,7 +16,7 @@
     "db:migrate:reset": "turbo migrate:reset",
     "db:migrate:deploy": "turbo migrate:deploy",
     "db:test:migrate:dev": "turbo test:migrate:dev",
-    "db:test:migrate:reset": "turbo test:migrate:test",
+    "db:test:migrate:reset": "turbo test:migrate:reset",
     "test": "turbo test",
     "test:e2e": "turbo test:e2e",
     "prepare": "husky",
