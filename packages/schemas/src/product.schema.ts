@@ -1,9 +1,8 @@
-import { z } from "zod";
+import { nullable, z } from "zod";
 import {
   CategoryParamSchema,
   LimitParamSchema,
   PageParamSchema,
-  PaginationSchema,
   SearchParamSchema,
   SortParamSchema,
   TagParamSchema,
@@ -90,10 +89,10 @@ export const ProductListItemDTOSchema = ProductSchema.pick({
   ),
 });
 
-export const ProductListDTOSchema = z.object({
-  data: z.array(ProductListItemDTOSchema),
-  pagination: PaginationSchema,
-});
+// export const ProductListDTOSchema = z.object({
+//   data: z.array(ProductListItemDTOSchema),
+//   pagination: PaginationSchema,
+// });
 
 export const ProductDetailDTOSchema = ProductSchema.pick({
   id: true,
@@ -134,7 +133,63 @@ export const ProductListParamsSchema = z.object({
 });
 
 export type Product = z.infer<typeof ProductSchema>;
-export type ProductListDTO = z.infer<typeof ProductListDTOSchema>;
 export type ProductListParams = z.infer<typeof ProductListParamsSchema>;
 export type ProductDetailDTO = z.infer<typeof ProductDetailDTOSchema>;
 export type ProductListItemDTO = z.infer<typeof ProductListItemDTOSchema>;
+
+export const TagResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+});
+
+export const ImageResponseSchea = z.object({
+  id: z.string(),
+  url: z.string(),
+  alt: z.string().nullable(),
+});
+
+export const VariantResponseSchema = z.object({
+  id: z.string(),
+  size: z.string(),
+  color: z.string(),
+  price: z.int().nonnegative(),
+  stock: z.int().nonnegative(),
+  images: z.array(ImageResponseSchea),
+});
+
+export const ProductResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  variants: z.array(VariantResponseSchema),
+  tags: z.array(TagResponseSchema),
+});
+
+export const PaginationSchema = z.object({
+  page: z.int().positive(),
+  limit: z.int().positive(),
+  total: z.int().nonnegative(),
+  totalPages: z.int().nonnegative(),
+});
+
+export const ProductsResponseSchema = z.object({
+  data: z.array(ProductResponseSchema),
+  pagination: PaginationSchema,
+});
+
+export const SortSchema = z.enum(["newest", "bestseller"]).default("newest");
+
+export const ProductsRequestSchema = z.object({
+  category: z.array(z.string()).optional(),
+  tag: z.array(z.string()).optional(),
+  search: z.string().optional(),
+  sort: SortSchema.optional(),
+  page: z.coerce.number().int().min(1).default(1).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20).optional(),
+});
+
+export type ProductsResponse = z.infer<typeof ProductsResponseSchema>;
+export type ProductResponse = z.infer<typeof ProductResponseSchema>;
+export type Sort = z.infer<typeof SortSchema>;
+export type ProductsRequest = z.infer<typeof ProductsRequestSchema>;

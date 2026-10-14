@@ -4,11 +4,12 @@ import { ProductListItemDTO } from "@nguyenthanhduyofficial/schemas";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { cn } from "../lib/utils";
 import { authClient } from "../lib/auth-client";
 import { useAuthStore } from "../stores/auth-store";
 import { useRouter } from "next/navigation";
+import { createCheckoutSessionAction } from "../actions/checkoutSession.action";
 
 export default function ProductCard({
   product,
@@ -19,18 +20,16 @@ export default function ProductCard({
   const router = useRouter();
   const [variantIndex, setVariantIndex] = useState(0);
   const { data: session } = authClient.useSession();
-
   const toggleAuthModal = useAuthStore((s) => s.toggleAuthModal);
+  const [pending, startTransition] = useTransition();
 
   async function handleBuyNow() {
     if (!session) {
       toggleAuthModal();
       return;
     }
-    const res = await fetch("/api/v1/checkout", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: session.user.id,
+    startTransition(async () => {
+      const result = await createCheckoutSessionAction({
         items: [
           {
             productId: product.id,
@@ -38,10 +37,16 @@ export default function ProductCard({
             quantity: 1,
           },
         ],
-      }),
+      });
+      if (!result) {
+        return;
+      }
+      if ("error" in result) {
+        return;
+      }
+
+      router.push(`/checkout?sessionId=${result.data.id}`);
     });
-    const { id } = await res.json();
-    router.push(`/checkout?sessionId=${id}`);
   }
   return (
     <div className="min-w-42 min-h-90 flex flex-col justify-between gap-2">

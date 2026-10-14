@@ -1,51 +1,81 @@
 import { Prisma, prisma } from "@nguyenthanhduyofficial/database";
-import {
-  CreateOrderParams,
-  OrderListParams,
-} from "@nguyenthanhduyofficial/schemas";
+
+export const OrderSelect = {
+  id: true,
+  code: true,
+  subTotal: true,
+  total: true,
+  paymentMethod: true,
+  shippingPhone: true,
+  shippingAddress: true,
+  items: {
+    select: {
+      name: true,
+      image: true,
+      price: true,
+      quantity: true,
+      subTotal: true,
+    },
+  },
+} satisfies Prisma.OrderSelect;
+
+export const CreateOrderSelect = {
+  id: true,
+} satisfies Prisma.OrderSelect;
 
 export class OrderRepository {
-  async create(params: CreateOrderParams) {
-    const {
-      userId,
-      shippingId,
-      code,
-      status = "pending",
-      subtotal,
-      shippingFee = 0,
-      total,
-      paymentMethod,
-      paymentStatus = "unpaid",
-      items,
-    } = params ?? {};
-
-    const order = await prisma.order.create({
-      data: {
-        userId,
-        shippingId,
-        code,
-        status,
-        subtotal,
-        shippingFee,
-        total,
-        paymentMethod,
-        paymentStatus,
-        items: {
-          create: items.map((item) => ({
-            productId: item.productId,
-            variantId: item.variantId,
-            name: item.name,
-            imageUrl: item.imageUrl ?? null,
-            price: item.price,
-            quantity: item.quantity,
-            subtotal: item.subtotal,
-          })),
-        },
-      },
-      select: orderDetailSelect,
+  async findById(id: string) {
+    return prisma.order.findUnique({
+      where: { id },
+      select: OrderSelect,
     });
-    return order;
   }
+
+  async create(data: Prisma.OrderUncheckedCreateInput) {
+    return prisma.order.create({ data, select: CreateOrderSelect });
+  }
+
+  // async create(params: CreateOrderParams) {
+  //   const {
+  //     userId,
+  //     shippingId,
+  //     code,
+  //     status = "pending",
+  //     subtotal,
+  //     shippingFee = 0,
+  //     total,
+  //     paymentMethod,
+  //     paymentStatus = "unpaid",
+  //     items,
+  //   } = params ?? {};
+  //
+  //   const order = await prisma.order.create({
+  //     data: {
+  //       userId,
+  //       shippingId,
+  //       code,
+  //       status,
+  //       subtotal,
+  //       shippingFee,
+  //       total,
+  //       paymentMethod,
+  //       paymentStatus,
+  //       items: {
+  //         create: items.map((item) => ({
+  //           productId: item.productId,
+  //           variantId: item.variantId,
+  //           name: item.name,
+  //           imageUrl: item.imageUrl ?? null,
+  //           price: item.price,
+  //           quantity: item.quantity,
+  //           subtotal: item.subtotal,
+  //         })),
+  //       },
+  //     },
+  //     select: orderDetailSelect,
+  //   });
+  //   return order;
+  // }
   async findMany(params: OrderListParams) {
     const { userId, page = 1, limit = 20 } = params;
     const where: Prisma.OrderWhereInput = {};
@@ -63,13 +93,6 @@ export class OrderRepository {
       data: orders,
       total,
     };
-  }
-  async findById(id: string) {
-    const order = await prisma.order.findUnique({
-      where: { id },
-      select: orderDetailSelect,
-    });
-    return order;
   }
 
   async createCheckoutSession(

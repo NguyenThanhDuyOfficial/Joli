@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { OrderSchema } from "./order.schema";
 import { ProductSchema } from "./product.schema";
 
 export const UserRoleSchema = z
@@ -14,7 +13,6 @@ export const UserSchema = z.object({
   role: UserRoleSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
-  orders: z.lazy(() => z.array(OrderSchema)),
   get productLove() {
     return z.array(ProductSchema.omit({ loves: true }));
   },

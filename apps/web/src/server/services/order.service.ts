@@ -1,22 +1,64 @@
 import {
-  CreateCheckOutSessionInput,
-  CreateOrderParams,
-  OrderDTO,
-  OrderListDTO,
+  CreateOrderRequest,
+  CreateOrderResponse,
   OrderListParams,
+  OrderResponse,
 } from "@nguyenthanhduyofficial/schemas";
 import { OrderRepository, ProductRepository } from "../repositories";
 import { BadRequestError, ConflictError, NotFoundError } from "../error";
+import { CheckoutSessionRepository } from "../repositories/checkoutSession.repository";
 
 export class OrderService {
   constructor(
     private readonly orderRepo: OrderRepository,
     private readonly productRepo: ProductRepository,
+    private readonly checkoutRepo: CheckoutSessionRepository,
   ) {}
 
-  async create(params: CreateOrderParams): Promise<OrderDTO> {
-    return await this.orderRepo.create(params);
+  async getById(id: string): Promise<OrderResponse> {
+    const order = await this.orderRepo.findById(id);
+    if (!order) {
+      throw new NotFoundError("ORDER_NOT_FOUND");
+    }
+    return { data: order };
   }
+
+  async create(
+    request: CreateOrderRequest,
+    userId: string,
+  ): Promise<CreateOrderResponse> {
+    const checkoutSession = await this.checkoutRepo.findById(
+      request.checkoutSessionId,
+    );
+    if (!checkoutSession) {
+      throw new NotFoundError("CHECKOUT_SESSION_NOT_FOUND");
+    }
+    const data = {
+      userId,
+      code: generateOrderCode(),
+      subTotal: checkoutSession.subTotal,
+      total: checkoutSession.total,
+      shippingName: request.shippingName,
+      shippingPhone: request.shippingPhone,
+      shippingAddress: request.shippingAddress,
+      note: request.note ?? null,
+      items: {
+        create: checkoutSession.items.map((item) => ({
+          name: item.name,
+          image: item.image,
+          price: item.price,
+          subTotal: item.subTotal,
+          quantity: item.quantity,
+        })),
+      },
+    };
+    const order = await this.orderRepo.create(data);
+    return { data: order };
+  }
+
+  // async create(params: CreateOrderParams): Promise<OrderDTO> {
+  //   return await this.orderRepo.create(params);
+  // }
   async getList(params: OrderListParams): Promise<OrderListDTO> {
     const { page = 1, limit = 20 } = params;
     const { data, total } = await this.orderRepo.findMany(params);
@@ -30,13 +72,13 @@ export class OrderService {
       },
     };
   }
-  async getById(id: string): Promise<OrderDTO> {
-    const order = await this.orderRepo.findById(id);
-    if (!order) {
-      throw new NotFoundError("ORDER_NOT_FOUND");
-    }
-    return order;
-  }
+  // async getById(id: string): Promise<OrderDTO> {
+  //   const order = await this.orderRepo.findById(id);
+  //   if (!order) {
+  //     throw new NotFoundError("ORDER_NOT_FOUND");
+  //   }
+  //   return order;
+  // }
 
   async getCheckoutSessionById(id: string) {
     return await this.orderRepo.findCheckoutSessionById(id);
@@ -98,4 +140,10 @@ export class OrderService {
       items: { create: items },
     });
   }
+}
+function generateOrderCode(): string {
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10).replace(/-/g, ""); // 20261014
+  const random = Math.random().toString(36).slice(2, 8).toUpperCase(); // ABC123
+  return `JOLI-${date}-${random}`;
 }

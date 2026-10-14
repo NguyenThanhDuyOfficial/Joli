@@ -199,6 +199,7 @@ model Product {
   description String?
   starRating  Decimal @default(0) @db.Decimal(4, 2)
   reviewCount Int     @default(0)
+  soldCount   Int     @default(0)
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
@@ -225,11 +226,11 @@ model CheckoutSessionItem {
   productId String
   variantId String
 
-  name      String
-  image     String
-  unitPrice Int
-  quantity  Int
-  subTotal  Int
+  name     String
+  image    String
+  price    Int
+  quantity Int
+  subTotal Int
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
