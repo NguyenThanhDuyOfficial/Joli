@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import ProductCard from "./ProductCard";
 import { productService } from "../server/container";
-import { Product } from "@nguyenthanhduyofficial/schemas";
+import { ProductListItem } from "@nguyenthanhduyofficial/schemas";
 
 export default async function BestSellerSection() {
   const t = await getTranslations("Products");
@@ -15,7 +15,7 @@ export default async function BestSellerSection() {
         {t("mostLoved")}
       </h3>
       <div className="flex gap-4 overflow-x-auto px-4 scroll-auto">
-        {data.map((product: Product) => (
+        {data.map((product: ProductListItem) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

@@ -12,8 +12,4 @@ export const checkoutSessionService = new CheckoutSessionService(
   productRepo,
 );
 export const orderRepo = new OrderRepository();
-export const orderService = new OrderService(
-  orderRepo,
-  productRepo,
-  checkoutSessionRepo,
-);
+export const orderService = new OrderService(orderRepo, checkoutSessionRepo);

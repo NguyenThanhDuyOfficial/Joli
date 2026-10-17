@@ -1,7 +1,4 @@
-import { string, z } from "zod";
-import { PaginationSchema } from "./common.schema";
-import { UserSchema } from "./user.schema";
-import { ProductImageSchema } from "./product.schema";
+import { z } from "zod";
 
 export const OrderStatusSchema = z.enum([
   "pending",

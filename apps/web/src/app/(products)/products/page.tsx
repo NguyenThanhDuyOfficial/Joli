@@ -1,8 +1,7 @@
 import FilterBar from "@/src/components/FilterBar";
 import ProductCard from "../../../components/ProductCard";
 import {
-  ProductListDTO,
-  ProductListItemDTO,
+  ProductListItem,
   ProductsRequestSchema,
 } from "@nguyenthanhduyofficial/schemas";
 import { ProductPagination } from "@/src/components/ProductPagination";
@@ -27,7 +26,7 @@ export default async function ProductsPage({
     <main>
       <FilterBar />
       <div className="grid grid-cols-2 gap-2 px-2">
-        {data.map((product: ProductListItemDTO) => (
+        {data.map((product: ProductListItem) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

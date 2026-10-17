@@ -3,15 +3,16 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^generate"],
       "inputs": ["$TURBO_DEFAULT$", ".env"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"],
+      "env": ["DATABASE_URL", "BETTER_AUTH_SECRET"]
     },
     "lint": { "dependsOn": ["^lint"] },
     "format": { "dependsOn": ["^format"] },
     "typecheck": { "dependsOn": ["^typecheck"] },
     "dev": { "cache": false, "persistent": true },
-    "generate": {},
+    "generate": { "cache": false },
     "seed": { "persistent": true },
     "migrate:dev": { "persistent": true, "cache": false },
     "migrate:reset": { "persistent": true, "cache": false },
