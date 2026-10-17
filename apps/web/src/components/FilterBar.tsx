@@ -12,11 +12,11 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 export default function FilterBar() {
   const t = useTranslations("Products");
-  const sortList = ["bestsellers", "newest"];
+  const sortList = ["bestseller", "newest"];
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentSort = searchParams.get("sort") ?? "";
+  const currentSort = searchParams.get("sort") ?? "title";
 
   function handleSelect(value: string | null) {
     const params = new URLSearchParams(searchParams.toString());

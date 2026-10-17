@@ -1,8 +1,8 @@
-import Image from 'next/image';
-import MostLovedSection from '../../components/MostLovedSection';
-import CategorySection from '../../components/CategorySection';
-import BenefitSection from '../../components/BenefitSection';
-import ContactSection from '../../components/ContactSection';
+import Image from "next/image";
+import MostLovedSection from "../../components/BestSellerSection";
+import CategorySection from "../../components/CategorySection";
+import BenefitSection from "../../components/BenefitSection";
+import ContactSection from "../../components/ContactSection";
 
 export default function HomePage() {
   return (

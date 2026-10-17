@@ -1,18 +1,31 @@
-import { ProductRepository, Product } from "../repositories/product.repository";
-import { NotFoundError } from "../error";
+import { ProductRepository } from "../repositories/product.repository";
 import type {
-  ProductDetailDTO,
   ProductsRequest,
-  ProductsResponse,
   Sort,
   ProductResponse,
+  ProductsListResponse,
 } from "@nguyenthanhduyofficial/schemas";
 import { Prisma } from "@nguyenthanhduyofficial/database";
+import { NotFoundError } from "../error";
 
 export class ProductService {
   constructor(private readonly productRepo: ProductRepository) {}
 
-  async getMany(request?: ProductsRequest): Promise<ProductsResponse> {
+  async getBySlug(slug: string, userId?: string): Promise<ProductResponse> {
+    const product = await this.productRepo.findBySlug(slug, userId);
+    if (!product) {
+      throw new NotFoundError("PRODUCT_NOT_FOUND");
+    }
+    return {
+      data: {
+        ...product,
+        starRating: product.starRating.toNumber(),
+        tags: product.tags.map((t) => t.tag),
+      },
+    };
+  }
+
+  async getMany(request?: ProductsRequest): Promise<ProductsListResponse> {
     const { page = 1, limit = 20, category, tag, search, sort } = request ?? {};
 
     const where: Prisma.ProductWhereInput = {};
@@ -47,28 +60,28 @@ export class ProductService {
     ]);
 
     return {
-      data: products.map((product) => transformToResponse(product)),
+      data: products.map((p) => ({ ...p, tags: p.tags.map((t) => t.tag) })),
       pagination: { limit, page, total, totalPages: Math.ceil(total / limit) },
     };
   }
 
-  async getBySlug(slug: string, userId?: string): Promise<ProductDetailDTO> {
-    const product = await this.productRepo.findBySlug(slug, userId);
-    if (!product) {
-      throw new NotFoundError("PRODUCT_NOT_FOUND");
-    }
-    const { loves, tags, variants, starRating, ...p } = product;
-    return {
-      ...p,
-      isLoved: loves.length > 0,
-      starRating: Number(starRating),
-      tags: tags.map((pt) => pt.tag),
-      variants: variants.map(({ price, ...v }) => ({
-        price: Number(price),
-        ...v,
-      })),
-    };
-  }
+  // async getBySlug(slug: string, userId?: string): Promise<ProductDetailDTO> {
+  //   const product = await this.productRepo.findBySlug(slug, userId);
+  //   if (!product) {
+  //     throw new NotFoundError("PRODUCT_NOT_FOUND");
+  //   }
+  //   const { loves, tags, variants, starRating, ...p } = product;
+  //   return {
+  //     ...p,
+  //     isLoved: loves.length > 0,
+  //     starRating: Number(starRating),
+  //     tags: tags.map((pt) => pt.tag),
+  //     variants: variants.map(({ price, ...v }) => ({
+  //       price: Number(price),
+  //       ...v,
+  //     })),
+  //   };
+  // }
 }
 
 export function getOrderBy(
@@ -81,11 +94,4 @@ export function getOrderBy(
     default:
       return { createdAt: "desc" };
   }
-}
-
-function transformToResponse(product: Product): ProductResponse {
-  return {
-    ...product,
-    tags: product.tags.map((t) => t.tag),
-  };
 }

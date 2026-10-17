@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ProductSchema } from "./product.schema";
 
 export const UserRoleSchema = z
   .enum(["admin", "user", "manager"])
@@ -13,7 +12,4 @@ export const UserSchema = z.object({
   role: UserRoleSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
-  get productLove() {
-    return z.array(ProductSchema.omit({ loves: true }));
-  },
 });

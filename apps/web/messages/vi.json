@@ -9,7 +9,7 @@
     "diffusers-refills": "Tinh dầu",
     "sort": {
       "title": "Sắp xếp theo",
-      "bestsellers": "Bán chạy",
+      "bestseller": "Bán chạy",
       "newest": "Mới nhất"
     }
   },

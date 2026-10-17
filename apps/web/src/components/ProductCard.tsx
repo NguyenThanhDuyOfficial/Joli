@@ -1,21 +1,18 @@
 "use client";
 
-import { ProductListItemDTO } from "@nguyenthanhduyofficial/schemas";
+import { ProductListItem } from "@nguyenthanhduyofficial/schemas";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { cn } from "../lib/utils";
 import { authClient } from "../lib/auth-client";
 import { useAuthStore } from "../stores/auth-store";
 import { useRouter } from "next/navigation";
 import { createCheckoutSessionAction } from "../actions/checkoutSession.action";
+import { formatPrice } from "../lib/format";
+import { Button } from "@nguyenthanhduyofficial/ui/components/button";
 
-export default function ProductCard({
-  product,
-}: {
-  product: ProductListItemDTO;
-}) {
+export default function ProductCard({ product }: { product: ProductListItem }) {
   const t = useTranslations("Products");
   const router = useRouter();
   const [variantIndex, setVariantIndex] = useState(0);
@@ -50,7 +47,10 @@ export default function ProductCard({
   }
   return (
     <div className="min-w-42 min-h-90 flex flex-col justify-between gap-2">
-      <Link href={product.slug} className="relative w-full aspect-square">
+      <Link
+        href={`/products/${product.slug}`}
+        className="relative w-full aspect-square"
+      >
         <Image
           src={product.variants[variantIndex]?.images[0]?.url!}
           alt={product.variants[variantIndex]?.images[0]?.alt ?? ""}
@@ -60,40 +60,36 @@ export default function ProductCard({
           loading="eager"
         />
       </Link>
-      <p className="text-base line-clamp-2 h-full">{product.name}</p>
+      <h5 className="line-clamp-2">{product.name}</h5>
       <div className="space-y-4">
         <div className="space-y-2">
-          <p className="text-[14px]">{product.variants[0]?.price}</p>
+          <h6 className="text-[14px]">
+            {formatPrice(product.variants[0]?.price!)}
+          </h6>
           <div className="flex gap-2">
             {product.variants[0]?.color &&
               product.variants.map((variant, index) => (
-                <button
+                <Button
                   key={index}
                   onClick={() => setVariantIndex(index)}
-                  className={cn(
-                    "rounded-sm px-2 py-2 border-[0.2px] border-button text-[12px]",
-                    index === variantIndex &&
-                      "bg-button text-button-foreground",
-                  )}
+                  variant={index === variantIndex ? "default" : "outline"}
+                  size="xs"
                 >
                   {variant.color}
-                </button>
+                </Button>
               ))}
           </div>
           <div className="flex gap-2">
             {product.variants[0]?.size &&
               product.variants.map((variant, index) => (
-                <button
+                <Button
                   key={index}
                   onClick={() => setVariantIndex(index)}
-                  className={cn(
-                    "rounded-sm px-2 py-2 border-[0.2px] border-button text-[12px]",
-                    index === variantIndex &&
-                      "bg-button text-button-foreground",
-                  )}
+                  variant={index === variantIndex ? "default" : "outline"}
+                  size="xs"
                 >
                   {variant.size}{" "}
-                </button>
+                </Button>
               ))}
           </div>
         </div>

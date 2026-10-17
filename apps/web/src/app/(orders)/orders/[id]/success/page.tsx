@@ -1,11 +1,10 @@
-import BestSellerSection from "@/src/components/MostLovedSection";
+import BestSellerSection from "@/src/components/BestSellerSection";
 import { formatPrice } from "@/src/lib/format";
 import { orderService } from "@/src/server/container";
 import { Button } from "@nguyenthanhduyofficial/ui/components/button";
 import { Separator } from "@nguyenthanhduyofficial/ui/components/separator";
 import { CircleCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { title } from "process";
 
 export default async function OrderSuccessPage({
   params,

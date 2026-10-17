@@ -1,10 +1,12 @@
 import FilterBar from "@/src/components/FilterBar";
-import ProductCard from "../../components/ProductCard";
+import ProductCard from "../../../components/ProductCard";
 import {
   ProductListDTO,
   ProductListItemDTO,
+  ProductsRequestSchema,
 } from "@nguyenthanhduyofficial/schemas";
 import { ProductPagination } from "@/src/components/ProductPagination";
+import { productService } from "@/src/server/container";
 
 export default async function ProductsPage({
   searchParams,
@@ -13,21 +15,18 @@ export default async function ProductsPage({
 }) {
   const raw = await searchParams;
 
-  const query = new URLSearchParams(raw as Record<string, string>).toString();
+  const parsed = ProductsRequestSchema.safeParse(raw);
+  if (!parsed.success) {
+  }
 
-  const res = await fetch(`${process.env.BASE_URL}/api/v1/products?${query}`, {
-    next: { revalidate: 30 },
-  });
-
-  if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-
-  const { data, pagination }: ProductListDTO = await res.json();
-  if (!data) return <p>Loading</p>;
+  const { data, pagination } = await productService.getMany(
+    parsed.success ? parsed.data : ProductsRequestSchema.parse({}),
+  );
 
   return (
     <main>
       <FilterBar />
-      <div className="grid grid-cols-2 gap-1 px-2">
+      <div className="grid grid-cols-2 gap-2 px-2">
         {data.map((product: ProductListItemDTO) => (
           <ProductCard key={product.id} product={product} />
         ))}

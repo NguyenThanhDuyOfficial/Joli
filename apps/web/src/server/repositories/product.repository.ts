@@ -4,27 +4,30 @@ import type { Prisma } from "@nguyenthanhduyofficial/database";
 export const ProductSelect = {
   id: true,
   name: true,
-  slug: true,
+  description: true,
+  starRating: true,
+  reviewCount: true,
   variants: {
+    where: { isActive: true },
     select: {
       id: true,
       size: true,
       color: true,
       price: true,
       stock: true,
-      images: { select: { id: true, url: true, alt: true } },
-    },
-  },
-  tags: {
-    select: {
-      tag: {
+      images: {
+        orderBy: { isPrimary: "desc" },
         select: {
           id: true,
-          name: true,
-          slug: true,
+          url: true,
+          alt: true,
+          isPrimary: true,
         },
       },
     },
+  },
+  tags: {
+    select: { tag: true },
   },
 } satisfies Prisma.ProductSelect;
 
@@ -32,10 +35,46 @@ export type Product = Prisma.ProductGetPayload<{
   select: typeof ProductSelect;
 }>;
 
+export const ProductsSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  variants: {
+    where: { isActive: true },
+    select: {
+      id: true,
+      size: true,
+      color: true,
+      price: true,
+      stock: true,
+      images: {
+        where: { isPrimary: true },
+        select: { id: true, url: true, alt: true },
+      },
+    },
+  },
+  tags: {
+    select: {
+      tag: true,
+    },
+  },
+} satisfies Prisma.ProductSelect;
+
 export class ProductRepository {
   async count(where: Prisma.ProductWhereInput) {
     return await prisma.product.count({ where });
   }
+
+  async findBySlug(slug: string, userId?: string) {
+    return await prisma.product.findUnique({
+      where: { slug },
+      select: {
+        ...ProductSelect,
+        loves: { where: { userId }, select: { userId: true } },
+      },
+    });
+  }
+
   async findUnique(where: Prisma.ProductWhereUniqueInput) {
     return prisma.product.findUnique({
       where,
@@ -55,7 +94,7 @@ export class ProductRepository {
       orderBy,
       skip,
       take,
-      select: ProductSelect,
+      select: ProductsSelect,
     });
   }
 
@@ -68,42 +107,6 @@ export class ProductRepository {
   `;
   }
 
-  async findBySlug(slug: string, userId?: string) {
-    return await prisma.product.findUnique({
-      where: { slug },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        starRating: true,
-        reviewCount: true,
-        loves: {
-          where: { userId },
-          select: { userId: true },
-        },
-        tags: {
-          select: { tag: true },
-        },
-        variants: {
-          select: {
-            id: true,
-            size: true,
-            color: true,
-            price: true,
-            stock: true,
-            images: {
-              select: {
-                id: true,
-                url: true,
-                alt: true,
-                isPrimary: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
   async findVariantsByIds(ids: string[]) {
     return await prisma.productVariant.findMany({
       where: { id: { in: ids }, isActive: true },
