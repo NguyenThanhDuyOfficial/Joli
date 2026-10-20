@@ -43,9 +43,14 @@ export const ProductsListResponseSchema = z.object({
 
 export const SortSchema = z.enum(["newest", "bestseller"]).default("newest");
 
+const arrayFromQuery = z.preprocess((val) => {
+  if (val === undefined || val === "") return undefined;
+  return Array.isArray(val) ? val : [val];
+}, z.array(z.string()).optional());
+
 export const ProductsRequestSchema = z.object({
-  category: z.array(z.string()).optional(),
-  tag: z.array(z.string()).optional(),
+  category: arrayFromQuery,
+  tag: arrayFromQuery,
   search: z.string().optional(),
   sort: SortSchema.optional(),
   page: z.coerce.number().int().min(1).default(1).optional(),

@@ -46,7 +46,7 @@ export default function ProductCard({ product }: { product: ProductListItem }) {
     });
   }
   return (
-    <div className="min-w-42 min-h-90 flex flex-col justify-between gap-2">
+    <div className="min-w-42 min-h-90 h-full flex flex-col justify-between gap-2">
       <Link
         href={`/products/${product.slug}`}
         className="relative w-full aspect-square"

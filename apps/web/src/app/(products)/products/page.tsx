@@ -13,10 +13,13 @@ export default async function ProductsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const raw = await searchParams;
+  console.log(raw);
 
   const parsed = ProductsRequestSchema.safeParse(raw);
   if (!parsed.success) {
+    console.log(parsed.error.issues);
   }
+  console.log(parsed);
 
   const { data, pagination } = await productService.getMany(
     parsed.success ? parsed.data : ProductsRequestSchema.parse({}),
