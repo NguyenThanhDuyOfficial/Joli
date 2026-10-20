@@ -91,7 +91,6 @@ function SignInForm() {
       return;
     }
     toggleAuthModal();
-    router.push("/");
   }
   return (
     <div>
@@ -196,7 +195,6 @@ function SignUpForm() {
       return;
     }
     toggleAuthModal();
-    router.push("/");
   }
   return (
     <div>

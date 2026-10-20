@@ -172,8 +172,9 @@ export default function CheckoutClientPage({
               </FieldGroup>
             </form>
           </div>
-          <div className="w-fit min-w-80">
-            <div className="py-4 space-y-2 space-x-8">
+          <div className="min-w-80">
+            <div className="py-4 space-y-2">
+              <h4>Thông tin đơn hàng</h4>
               <div className="">
                 <div className="w-full flex justify-between">
                   <p>{t("subTotal")}</p>
