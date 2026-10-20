@@ -2,11 +2,8 @@ import MostLovedSection from "../../components/BestSellerSection";
 import CategorySection from "../../components/CategorySection";
 import BenefitSection from "../../components/BenefitSection";
 import ContactSection from "../../components/ContactSection";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-
+export const dynamic = "force-dynamic";
 export default function HomePage() {
-  const t = useTranslations("Homepage");
   return (
     <main className="bg-background">
       <section className="relative w-full max-h-90 aspect-video">
