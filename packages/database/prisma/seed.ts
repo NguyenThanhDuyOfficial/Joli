@@ -1,3 +1,9 @@
+// thể loại:
+// colognes
+// candle
+// body-hand-wash
+// diffusers-refills
+
 import "dotenv/config";
 import { prisma } from "./prisma.js";
 

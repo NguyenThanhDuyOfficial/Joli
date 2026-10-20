@@ -1,28 +1,28 @@
-import { useTranslations } from 'next-intl';
-import { Pen, Gift, Car } from 'lucide-react';
+import { useTranslations } from "next-intl";
+import { Pen, Gift, Car } from "lucide-react";
 
 export default function BenefitSection() {
-  const t = useTranslations('Benefit');
+  const t = useTranslations("Benefit");
   const benefitList = [
     {
-      title: t('presonalization.title'),
-      description: t('presonalization.description'),
+      title: t("presonalization.title"),
+      description: t("presonalization.description"),
       icon: Pen,
     },
     {
-      title: t('wrapping.title'),
-      description: t('wrapping.description'),
+      title: t("wrapping.title"),
+      description: t("wrapping.description"),
       icon: Gift,
     },
     {
-      title: t('shipping.title'),
-      description: t('shipping.description'),
+      title: t("shipping.title"),
+      description: t("shipping.description"),
       icon: Car,
     },
   ];
   return (
-    <section className="bg-card px-2 py-10 space-y-3">
-      <h3>{t('title')}</h3>
+    <section className="bg-card px-4 py-10 space-y-3 md:px-16">
+      <h3>{t("title")}</h3>
       {benefitList.map((benefit) => {
         const Icon = benefit.icon;
 

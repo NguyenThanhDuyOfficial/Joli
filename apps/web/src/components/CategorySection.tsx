@@ -7,7 +7,7 @@ export default function CategorySection() {
   const categoryList = [
     {
       name: t("colognes"),
-      slug: "colognes/colognes",
+      slug: "colognes",
       image: "/Cologne.png",
     },
 
@@ -28,7 +28,7 @@ export default function CategorySection() {
     },
   ];
   return (
-    <section className="grid grid-cols-2 grid-rows-2 gap-2 py-10 px-2">
+    <section className="grid grid-cols-2 grid-rows-2 gap-4 py-10 px-4 md:grid-cols-4 md:grid-rows-1 md:px-16">
       {categoryList.map((category, index) => (
         <div key={index} className="space-y-2 w-full h-full">
           <Link

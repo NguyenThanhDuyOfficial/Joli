@@ -19,11 +19,14 @@ export default function Header() {
     })),
   );
   const { data: session } = authClient.useSession();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
       <header className="sticky top-0 right-0 w-full h-15 z-50 px-5 py-2 flex justify-between items-center bg-background">
         <div>
-          <Menu />
+          <Button variant="ghost" onClick={() => setIsMenuOpen((v) => !v)}>
+            <Menu />
+          </Button>
         </div>
         <div>
           <Link href="/" className="text-xl">
@@ -31,8 +34,8 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex gap-4">
-          <Search />
-          <ShoppingCart />
+          {/* <Search /> */}
+          {/* <ShoppingCart /> */}
           <Button
             variant="ghost"
             size="icon"
@@ -52,10 +55,36 @@ export default function Header() {
             </Button>
           </div>
         ) : (
-          <div className="fixed top-0 right-0 z-40 w-full h-screen bg-background/90 flex flex-col justify-center">
+          <div
+            className="fixed top-0 right-0 z-10 w-full h-screen bg-background/90 flex flex-col justify-center"
+            onClick={() => toggleAuthModal()}
+          >
             <AuthForm />
           </div>
         ))}
+      {isMenuOpen && (
+        <div
+          onClick={() => setIsMenuOpen(false)}
+          className="fixed inset-0 z-50  bg-black/50 backdrop-blur-sm"
+        >
+          <div className="w-fit h-full bg-background flex flex-col gap-2 py-8 px-4">
+            {categoriesList.map((category) => (
+              <Link key={category.href} href={`/products${category.href}`}>
+                {t(category.title)}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
+
+const categoriesList = [
+  { title: "bestSeller", href: "?sort=bestseller" },
+  { title: "newest", href: "?sort=newest" },
+  { title: "colognes", href: "?category=colognes" },
+  { title: "candle", href: "?category=candle" },
+  { title: "body-hand-wash", href: "?category=body-hand-wash" },
+  { title: "diffusers-refills", href: "?category=diffusers-refills" },
+];

@@ -5,6 +5,8 @@ import { Button } from "@nguyenthanhduyofficial/ui/components/button";
 import { Separator } from "@nguyenthanhduyofficial/ui/components/separator";
 import { CircleCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function OrderSuccessPage({
   params,
@@ -34,7 +36,7 @@ export default async function OrderSuccessPage({
     { title: t("phoneNumber"), value: order.shippingPhone },
   ];
   return (
-    <main className="py-8">
+    <main className="px-4 py-8 md:px-16">
       <div className="w-full flex flex-col gap-2 items-center">
         <div className="px-2 py-4">
           <CircleCheck size={72} />
@@ -60,9 +62,15 @@ export default async function OrderSuccessPage({
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 z-50 p-2 py-4 flex flex-col gap-2 w-full bg-background drop-shadow-[0_-4px_4px_rgba(0,0,0,0.2)]">
-        <Button>{t("backToHome")}</Button>
-        <Button variant="outline">{t("orderTracking")}</Button>
+      <div className="fixed bottom-0 left-0 z-50 p-2 py-4 flex flex-col items-center gap-2 w-full bg-background drop-shadow-[0_-4px_4px_rgba(0,0,0,0.2)]">
+        <Button
+          className="w-full max-w-90"
+          nativeButton={false}
+          render={<Link href="/">{t("backToHome")}</Link>}
+        ></Button>
+        {/* <Button className="w-full max-w-90" variant="outline"> */}
+        {/*   {t("orderTracking")} */}
+        {/* </Button> */}
       </div>
       <div>
         <BestSellerSection />

@@ -12,6 +12,13 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ProductItem } from "@nguyenthanhduyofficial/schemas";
 import { formatPrice } from "../lib/format";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@nguyenthanhduyofficial/ui/components/carousel";
 
 export default function ProductClientPage({
   product,
@@ -55,9 +62,9 @@ export default function ProductClientPage({
   }
 
   return (
-    <main>
-      <div>
-        <div className="px-2 py-4 space-y-2">
+    <main className="py-8">
+      <div className="md:grid md:grid-cols-[auto_1fr] md:grid-rows-2 md:gap-x-8  md:px-16">
+        <div className="px-2 py-4 space-y-2 md:order-2">
           <div className="flex justify-between">
             <h5>{product.name}</h5>
             {product.loves?.length ? (
@@ -79,7 +86,7 @@ export default function ProductClientPage({
             ))}
           </div>
         </div>
-        <div className="relative w-90 aspect-square">
+        <div className="relative w-90 aspect-square md:order-1 md:row-span-2">
           <Image
             src={product.variants[variantIndex]?.images[0]?.url ?? ""}
             alt={
@@ -87,10 +94,11 @@ export default function ProductClientPage({
             }
             fill
             className="object-cover"
+            sizes="360px"
             priority
           />
         </div>
-        <div className="px-2 py-4 space-y-2">
+        <div className="px-2 py-4 space-y-2 md:order-3">
           <h5>{formatPrice(product.variants[variantIndex]?.price!)}</h5>
           <div className="flex gap-2">
             {product.variants[0]?.size &&

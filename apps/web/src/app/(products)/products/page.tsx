@@ -23,9 +23,9 @@ export default async function ProductsPage({
   );
 
   return (
-    <main>
+    <main className="px-4 md:px-16">
       <FilterBar />
-      <div className="grid grid-cols-2 gap-2 px-2">
+      <div className="grid grid-cols-2 gap-4 gap-y-8 md:grid-cols-4">
         {data.map((product: ProductListItem) => (
           <ProductCard key={product.id} product={product} />
         ))}

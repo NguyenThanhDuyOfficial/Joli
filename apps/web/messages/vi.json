@@ -1,4 +1,8 @@
 {
+  "Homepage": {
+    "introducing": "Ra mắt bộ",
+    "exploreChristmas": "Khám phá Giáng Sinh"
+  },
   "Products": {
     "mostLoved": "Được Yêu Thích Nhất",
     "image": "Ảnh sản phẩm",
@@ -94,6 +98,12 @@
     "name": "Tên người dùng",
     "confirmPassword": "Nhập lại mật khẩu",
     "acceptTerm": "Tôi đồng ý với Điều khoản & Chính sách",
+    "colognes": "Nước Hoa",
+    "candle": "Nến",
+    "body-hand-wash": "Sữa Tắm & Nước Rửa Tay",
+    "diffusers-refills": "Tinh dầu",
+    "bestSeller": "Bán chạy",
+    "newest": "Mới nhất",
 
     "EMAIL_INVALID": "Email không hợp lệ",
     "EMAIL_MIN": "Email quá ngắn",

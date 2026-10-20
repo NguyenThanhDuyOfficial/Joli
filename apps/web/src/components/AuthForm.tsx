@@ -22,46 +22,61 @@ import { Separator } from "@nguyenthanhduyofficial/ui/components/separator";
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "../stores/auth-store";
+import Link from "next/link";
 
 export default function AuthForm() {
   const t = useTranslations("Auth");
   const [isSignUp, setIsSignUp] = useState(false);
   return (
-    <div className="mx-4 p-4 border rounded-lg space-y-8 bg-card">
-      <div className="w-full flex gap-4">
-        <Button
-          variant="ghost"
-          className="flex-1"
-          onClick={() => setIsSignUp(false)}
-        >
-          {t("signIn")}
-        </Button>
-        <Separator orientation="vertical" />
-        <Button
-          variant="ghost"
-          className="flex-1"
-          onClick={() => setIsSignUp(true)}
-        >
-          {t("signUp")}
-        </Button>
+    <>
+      <div
+        className="z-20 mx-4 p-4 border rounded-lg space-y-8 bg-card md:mx-16 overflow-scroll"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-full flex gap-4">
+          <Button
+            variant="ghost"
+            className="flex-1"
+            onClick={() => setIsSignUp(false)}
+          >
+            {t("signIn")}
+          </Button>
+          <Separator orientation="vertical" />
+          <Button
+            variant="ghost"
+            className="flex-1"
+            onClick={() => setIsSignUp(true)}
+          >
+            {t("signUp")}
+          </Button>
+        </div>
+        {isSignUp ? <SignUpForm /> : <SignInForm />}
       </div>
-      {isSignUp ? <SignUpForm /> : <SignInForm />}
-    </div>
+    </>
   );
 }
 
 function SignInForm() {
   const router = useRouter();
   const t = useTranslations("Auth");
-
+  const toggleAuthModal = useAuthStore((s) => s.toggleAuthModal);
   const [error, setError] = useState("");
 
+  // const form = useForm({
+  //   resolver: zodResolver(SignInSchema),
+  //   defaultValues: {
+  //     email: "",
+  //     password: "",
+  //     rememberMe: "off",
+  //   },
+  // });
   const form = useForm({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: "off",
+      email: "test@gmail.com",
+      password: "test1234",
+      rememberMe: "on",
     },
   });
 
@@ -75,6 +90,7 @@ function SignInForm() {
       setError(error?.code);
       return;
     }
+    toggleAuthModal();
     router.push("/");
   }
   return (
@@ -156,6 +172,7 @@ function SignInForm() {
 function SignUpForm() {
   const t = useTranslations("Auth");
   const router = useRouter();
+  const toggleAuthModal = useAuthStore((s) => s.toggleAuthModal);
   const form = useForm({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -178,6 +195,7 @@ function SignUpForm() {
       setError(error.code);
       return;
     }
+    toggleAuthModal();
     router.push("/");
   }
   return (

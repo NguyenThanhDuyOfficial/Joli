@@ -81,7 +81,7 @@ export default function Footer() {
     },
   ];
   return (
-    <footer className="bg-background">
+    <footer className="bg-background px-4 md:px-16">
       {footerList.map((footer) => {
         const [open, setOpen] = useState(false);
         return (
