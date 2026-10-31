@@ -7,6 +7,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@nguyenthanhduyofficial/ui/components/carousel";
+import { Suspense } from "react";
 
 export default async function BestSellerSection() {
   const t = await getTranslations("Products");
@@ -19,17 +20,19 @@ export default async function BestSellerSection() {
       <h3 className="w-full text-center text-lg md:text-xl font-medium">
         {t("mostLoved")}
       </h3>
-      <Carousel
-        opts={{ loop: true, align: "start", containScroll: "trimSnaps" }}
-      >
-        <CarouselContent>
-          {data.map((product: ProductListItem) => (
-            <CarouselItem key={product.id} className="basis-1/2 md:basis-1/4">
-              <ProductCard product={product} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <Suspense fallback={<p>Loading...</p>}>
+        <Carousel
+          opts={{ loop: true, align: "start", containScroll: "trimSnaps" }}
+        >
+          <CarouselContent>
+            {data.map((product: ProductListItem) => (
+              <CarouselItem key={product.id} className="basis-1/2 md:basis-1/4">
+                <ProductCard product={product} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </Suspense>
     </section>
   );
 }

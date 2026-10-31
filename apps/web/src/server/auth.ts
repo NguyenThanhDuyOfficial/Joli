@@ -1,13 +1,14 @@
-import { prisma } from '@nguyenthanhduyofficial/database';
-import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { prisma } from "@nguyenthanhduyofficial/database";
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: 'postgresql',
+    provider: "postgresql",
   }),
-  basePath: '/api/v1/auth',
+  basePath: "/api/v1/auth",
   emailAndPassword: {
     enabled: true,
   },
+  trustedOrigins: ["http://192.168.1.19:3000"],
 });

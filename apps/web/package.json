@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@icons-pack/react-simple-icons": "^13.15.1",
     "@nguyenthanhduyofficial/database": "workspace:*",
     "@nguyenthanhduyofficial/schemas": "workspace:*",
     "@nguyenthanhduyofficial/ui": "workspace:*",
@@ -47,5 +48,16 @@
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.11"
   },
-  "packageManager": "pnpm@11.26.0"
+  "packageManager": "pnpm@11.26.0",
+  "browserslist": {
+    "production": [
+      "chrome >= 100",
+      "firefox >= 100",
+      "safari >= 15",
+      "edge >= 100"
+    ],
+    "development": [
+      "last 1 chrome version"
+    ]
+  }
 }

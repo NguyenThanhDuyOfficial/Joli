@@ -5,6 +5,7 @@ import ProductClientPage from "@/src/components/ProductClientPage";
 import { auth } from "@/src/server/auth";
 import { productService } from "@/src/server/container";
 import { headers } from "next/headers";
+import { Suspense } from "react";
 
 export default async function ProductPage({
   params,
@@ -16,8 +17,21 @@ export default async function ProductPage({
     headers: await headers(),
   });
 
-  const result = await productService.getBySlug(slug, session?.user.id);
+  return (
+    <Suspense fallback={<ProductSkeleton />}>
+      <ProductContent slug={slug} userId={session?.user.id} />
+    </Suspense>
+  );
+}
 
+async function ProductContent({
+  slug,
+  userId,
+}: {
+  slug: string;
+  userId?: string;
+}) {
+  const result = await productService.getBySlug(slug, userId);
   return (
     <ProductClientPage
       product={result.data}
@@ -30,4 +44,8 @@ export default async function ProductPage({
       }
     />
   );
+}
+
+function ProductSkeleton() {
+  return <p>Đang tải...</p>;
 }

@@ -233,7 +233,7 @@ export default function CheckoutClientPage({
 
           <div className="sticky bottom-0 left-0 py-2 bg-background md:col-star-">
             <Button form="checkout-form" className="w-full" type="submit">
-              {t("payment")}
+              {pending ? t("processing") : t("payment")}
             </Button>
           </div>
         </div>

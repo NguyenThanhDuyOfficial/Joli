@@ -2,23 +2,38 @@ import MostLovedSection from "../../components/BestSellerSection";
 import CategorySection from "../../components/CategorySection";
 import BenefitSection from "../../components/BenefitSection";
 import ContactSection from "../../components/ContactSection";
-export const dynamic = "force-dynamic";
+import AutoLogin from "@/src/components/AutoLogin";
+import Image from "next/image";
+
 export default function HomePage() {
   return (
     <main className="bg-background">
+      {/* This component is for live demo version only.  */}
+      <AutoLogin />
+
       <section className="relative w-full max-h-90 aspect-video">
-        <video className="w-full h-full object-cover" loop autoPlay>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/hero-poster1.webp"
+          preload="none"
+          className="absolute inset-0 w-full h-full object-cover"
+        >
           <source src="/JML_Christmas_HP_DT_1_launch.mp4" type="video/mp4" />
         </video>
-        {/* <div className="absolute bottom-2 left-2 p-4 flex flex-col gap-1 items-center rounded-lg bg-background"> */}
-        {/*   <p className="text-base">{t("introducing")} Tartan Tales</p> */}
-        {/*   <Link */}
-        {/*     href="/products?" */}
-        {/*     className="bg-button text-button-foreground p-2 text-sm" */}
-        {/*   > */}
-        {/*     {t("exploreChristmas")} */}
-        {/*   </Link> */}
-        {/* </div> */}
+
+        <Image
+          src="/hero-poster1.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover pointer-events-none"
+          style={{ animation: "fade-out-poster 0.5s ease-in 2s forwards" }}
+        />
       </section>
       <MostLovedSection />
       <CategorySection />
