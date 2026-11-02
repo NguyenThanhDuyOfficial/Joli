@@ -7,6 +7,7 @@ import { CircleCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export default async function OrderSuccessPage({
   params,
@@ -37,41 +38,43 @@ export default async function OrderSuccessPage({
   ];
   return (
     <main className="px-4 py-8 md:px-16">
-      <div className="w-full flex flex-col gap-2 items-center">
-        <div className="px-2 py-4">
-          <CircleCheck size={72} />
-        </div>
-        <div className="py-2 pb-2 text-center space-y-2">
-          <h3>{t("orderSuccess")}</h3>
-          <p>{t("description")}</p>
-        </div>
-        <div className="w-full px-4 py-4 bg-card">
-          <h4>{t("orderSummary")}</h4>
-          <div className="py-4 space-y-2">
-            {orderInformations.map((infor, index) => (
-              <div className="flex gap-4 justify-between text-sm" key={index}>
-                <p>{infor.title}</p>
-                <p className="text-end overflow-auto">{infor.value}</p>
-              </div>
-            ))}
+      <Suspense fallback={<p>Loading...</p>}>
+        <div className="w-full flex flex-col gap-2 items-center">
+          <div className="px-2 py-4">
+            <CircleCheck size={72} />
           </div>
-          <Separator />
-          <div className="pt-2 flex justify-between">
-            <h6>{t("total")}</h6>
-            <h6>{formatPrice(order.total)}</h6>
+          <div className="py-2 pb-2 text-center space-y-2">
+            <h3>{t("orderSuccess")}</h3>
+            <p>{t("description")}</p>
+          </div>
+          <div className="w-full px-4 py-4 bg-card">
+            <h4>{t("orderSummary")}</h4>
+            <div className="py-4 space-y-2">
+              {orderInformations.map((infor, index) => (
+                <div className="flex gap-4 justify-between text-sm" key={index}>
+                  <p>{infor.title}</p>
+                  <p className="text-end overflow-auto">{infor.value}</p>
+                </div>
+              ))}
+            </div>
+            <Separator />
+            <div className="pt-2 flex justify-between">
+              <h6>{t("total")}</h6>
+              <h6>{formatPrice(order.total)}</h6>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="fixed bottom-0 left-0 z-50 p-2 py-4 flex flex-col items-center gap-2 w-full bg-background drop-shadow-[0_-4px_4px_rgba(0,0,0,0.2)]">
-        <Button
-          className="w-full max-w-90"
-          nativeButton={false}
-          render={<Link href="/">{t("backToHome")}</Link>}
-        ></Button>
-        {/* <Button className="w-full max-w-90" variant="outline"> */}
-        {/*   {t("orderTracking")} */}
-        {/* </Button> */}
-      </div>
+        <div className="fixed bottom-0 left-0 z-50 p-2 py-4 flex flex-col items-center gap-2 w-full bg-background drop-shadow-[0_-4px_4px_rgba(0,0,0,0.2)]">
+          <Button
+            className="w-full max-w-90"
+            nativeButton={false}
+            render={<Link href="/">{t("backToHome")}</Link>}
+          ></Button>
+          {/* <Button className="w-full max-w-90" variant="outline"> */}
+          {/*   {t("orderTracking")} */}
+          {/* </Button> */}
+        </div>
+      </Suspense>
       <div>
         <BestSellerSection />
       </div>

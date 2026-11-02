@@ -4,7 +4,7 @@ import { ProductListItem } from "@nguyenthanhduyofficial/schemas";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { authClient } from "../lib/auth-client";
 import { useAuthStore } from "../stores/auth-store";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,9 @@ export default function ProductCard({ product }: { product: ProductListItem }) {
   const { data: session } = authClient.useSession();
   const toggleAuthModal = useAuthStore((s) => s.toggleAuthModal);
   const [pending, startTransition] = useTransition();
+  useEffect(() => {
+    router.prefetch("/checkout");
+  }, [router]);
 
   async function handleBuyNow() {
     if (!session) {
@@ -56,7 +59,8 @@ export default function ProductCard({ product }: { product: ProductListItem }) {
           alt={product.variants[variantIndex]?.images[0]?.alt ?? ""}
           fill
           className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 22vw"
+          quality={70}
           loading="eager"
         />
       </Link>
@@ -97,7 +101,7 @@ export default function ProductCard({ product }: { product: ProductListItem }) {
           className="w-full h-8 bg-button text-button-foreground"
           onClick={handleBuyNow}
         >
-          {t("buyNow")}
+          {pending ? t("processing") : t("buyNow")}
         </button>
       </div>
     </div>
