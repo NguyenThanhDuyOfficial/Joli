@@ -12,6 +12,16 @@ export default function HomePage() {
       <AutoLogin />
 
       <section className="relative w-full max-h-90 aspect-video">
+        <Image
+          src="/hero-poster1.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          quality={75}
+          className="object-cover pointer-events-none"
+          style={{ animation: "fade-out-poster 0.5s ease-in 2s forwards" }}
+        />
         <video
           autoPlay
           loop
@@ -23,17 +33,6 @@ export default function HomePage() {
         >
           <source src="/JML_Christmas_HP_DT_1_launch.mp4" type="video/mp4" />
         </video>
-
-        <Image
-          src="/hero-poster1.webp"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          quality={75}
-          className="object-cover pointer-events-none"
-          style={{ animation: "fade-out-poster 0.5s ease-in 2s forwards" }}
-        />
       </section>
       <MostLovedSection />
       <CategorySection />

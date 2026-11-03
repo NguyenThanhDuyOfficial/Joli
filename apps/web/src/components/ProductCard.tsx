@@ -60,7 +60,7 @@ export default function ProductCard({ product }: { product: ProductListItem }) {
           fill
           className="object-cover"
           sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 22vw"
-          quality={70}
+          quality={75}
           loading="eager"
         />
       </Link>
